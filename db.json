@@ -1,0 +1,58 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "공동구매합니다",
+      "category": "PURCHASE",
+      "deadline": "2022.07.23",
+      "numberPeople": 4,
+      "currentNumberPeople": 1,
+      "contactMethod": "email",
+      "viewCount": 3,
+      "commentCount": 0,
+      "nickname": "test",
+      "imageUrl": "https://velog.velcdn.com/images/kimhyo_0218/post/cdab776f-8cdf-4fd0-9e9f-5f59ad8d5b69/reactquery_logo.png",
+      "content": "공구할사람 손들어라~",
+      "createdAt": "2022.07.17"
+    },
+    {
+      "id": 2,
+      "title": "공연 같이 보실분",
+      "category": "EXHIBITION",
+      "deadline": "2022.07.25",
+      "numberPeople": 3,
+      "currentNumberPeople": 2,
+      "contactMethod": "오픈카톡방",
+      "viewCount": 1,
+      "commentCount": 0,
+      "nickname": "testtest",
+      "imageUrl": "https://images.velog.io/images/cyheum/post/37534693-2ae7-4134-91ab-af7eb74b7efb/react-logo.png",
+      "content": "멜로망스..... 영접하고시퍼요",
+      "createdAt": "2022.07.22"
+    },
+    {
+      "title": "심심한사람 전시회같이가요",
+      "category": "EXHIBITION",
+      "deadline": "2022.07.27",
+      "numberPeople": 2,
+      "currentNumberPeople": 1,
+      "contactMethod": "오픈카톡방",
+      "viewCount": 5,
+      "commentCount": 1,
+      "nickname": "백수",
+      "imageUrl": "https://blog.kakaocdn.net/dn/bLLREg/btrbhYLdx4M/w3BWXIjm185YfkGITrU9HK/img.jpg",
+      "id": 3,
+      "content": "전시회 함께하실 분~ 오픈카톡방으로 오세요",
+      "createdAt": "2022.07.23"
+    }
+  ],
+  "comment": [
+    {
+      "content": "성별이 어떻게 되세요?",
+      "nickname": "호이호이",
+      "createdAt": "2022.07.23",
+      "postId": "3",
+      "id": 1
+    }
+  ]
+}
