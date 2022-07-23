@@ -1,13 +1,19 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import Header from './Header';
+import styled from 'styled-components';
 
 const Layout = () => {
   return (
-    <main>
-      <header>헤더</header>
+    <Main>
+      <Header />
       <Outlet />
-    </main>
+    </Main>
   );
 };
 
 export default Layout;
+
+const Main = styled.main`
+  padding: 90px 20px 40px;
+`;
