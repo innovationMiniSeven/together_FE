@@ -29,4 +29,18 @@ export const GlobalStyle = createGlobalStyle`
   li {
     list-style: none;
   }
+
+  input, button {
+    background: none;
+    border: none;
+    outline: none;
+  }
+
+  input {
+    background: #f1f1f1;
+  }
+
+  button {
+    cursor: pointer;
+  }
 `;

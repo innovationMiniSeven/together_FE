@@ -31,8 +31,8 @@ const HeaderComponent = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
-  padding: 0 15px;
+  height: 70px;
+  padding: 0 25px;
   background: #f1f1f1;
   a {
     display: flex;
