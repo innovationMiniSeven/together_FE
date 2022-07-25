@@ -27,6 +27,20 @@
       "password": "xptmxm",
       "confirmPassword": "xptmxm",
       "id": 4
+    },
+    {
+      "username": "test1234",
+      "nickname": "테스트에요",
+      "password": "xptmxm",
+      "confirmPassword": "xptmxm",
+      "id": 5
+    },
+    {
+      "username": "testtest22",
+      "nickname": "테스트닉네임",
+      "password": "qlalfqjsgh",
+      "confirmPassword": "qlalfqjsgh",
+      "id": 6
     }
   ],
   "posts": [
@@ -83,6 +97,27 @@
       "createdAt": "2022.07.23",
       "postId": "3",
       "id": 1
+    },
+    {
+      "content": "몇시에 모이나요?",
+      "nickname": "전시회전국일주",
+      "createdAt": "2022.07.22",
+      "postId": "3",
+      "id": 2
+    },
+    {
+      "content": "저도 살래요",
+      "nickname": "미니멀리즘",
+      "createdAt": "2022.07.21",
+      "postId": "1",
+      "id": 3
+    },
+    {
+      "content": "테스트 댓글",
+      "createdAt": "2022.7.25",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 4
     }
   ]
 }
