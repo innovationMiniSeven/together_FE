@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import Form from '../components/Form';
 
 const Login = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -12,7 +14,25 @@ const Login = () => {
   } = useForm({ mode: 'onChange' });
 
   const submitLogin = async (formData) => {
-    console.log(formData);
+    const data = {
+      username: formData.username,
+      password: formData.password,
+    };
+
+    try {
+      const res = await axios.post('http://localhost:5001/api/login', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // TODO: 백엔드 response 받아서 한번더 검증하는 로직 추가
+      console.log(res);
+      alert('환영HeyYo :)');
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+      alert('로그인에 문제가 발생했습니다');
+    }
   };
 
   return (
