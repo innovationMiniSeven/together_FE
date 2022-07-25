@@ -9,11 +9,11 @@ const Header = () => {
       <Link to="/">
         <TbFaceId />
         <h1>
-          <img src="image/titlelogo.png" alt="헤이요 로고" />
+          <img src="/image/titlelogo.png" alt="헤이요 로고" />
         </h1>
       </Link>
       <Navbar>
-        <Link to="/post">포스트작성</Link>
+        <Link to="/post">게시글작성</Link>
         <Link to="/mypage">마이페이지</Link>
         <Link to="/login">로그인</Link>
       </Navbar>

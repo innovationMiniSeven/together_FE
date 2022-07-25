@@ -15,6 +15,7 @@ export const GlobalStyle = createGlobalStyle`
     'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
     'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     sans-serif !important;
+    box-sizing: border-box;
   }
 
   h1 {
@@ -30,14 +31,21 @@ export const GlobalStyle = createGlobalStyle`
     list-style: none;
   }
 
-  input, button {
+  input, button, select, textarea {
     background: none;
     border: none;
     outline: none;
   }
 
   input {
-    background: #f1f1f1;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
   }
 
   button {
