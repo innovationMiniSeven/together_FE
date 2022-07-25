@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineArrowRight } from 'react-icons/ai';
+
 import Form from '../components/Form';
+import Button from '../components/Button'
 
 const Join = () => {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const Join = () => {
     formState: { isValid, errors },
   } = useForm({ mode: 'onChange' });
 
-  const submitJoin = async (formData) => {
+  const onSubmitJoin = async (formData) => {
     const data = {
       username: formData.username,
       nickname: formData.nickname,
@@ -37,7 +39,7 @@ const Join = () => {
   };
 
   return (
-    <Form id="signup-form" onSubmit={handleSubmit(submitJoin)}>
+    <Form id="signup-form" onSubmit={handleSubmit(onSubmitJoin)}>
       <h2>회원가입</h2>
 
       <InputBox>
@@ -111,9 +113,9 @@ const Join = () => {
         )}
       </InputBox>
 
-      <button type="submit" form="signup-form" disabled={!isValid}>
+      <Button type="submit" form="signup-form" disabled={!isValid}>
         가입 HeyYo :)
-      </button>
+      </Button>
 
       <p>
         이미 계정이 있다면?

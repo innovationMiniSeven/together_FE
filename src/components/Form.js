@@ -25,7 +25,7 @@ const FormContainer = styled.form`
   justify-content: center;
   align-items: center;
   gap: 24px;
-  width: 300px;
+  max-width: 500px;
   margin: 8vh auto 0;
   padding: 65px 83px 60px;
   border: 2px solid #f1f1f1;
@@ -41,7 +41,7 @@ const FormContainer = styled.form`
   }
   input {
     padding: 15px 25px;
-    width: 250px;
+    width: 100%;
     border-radius: 5px;
     background: ${({ theme }) => (theme === 'login' ? '#fff' : '#f1f1f1')};
     transition: background 0.2s ease-in-out;
@@ -49,19 +49,6 @@ const FormContainer = styled.form`
     &:hover,
     &:focus {
       background: #e5e5e5;
-    }
-  }
-  button {
-    margin: 5px 0 -15px;
-    width: 100%;
-    padding: 18px 0;
-    border-radius: 5px;
-    background: #f2b90c;
-    font-size: 18px;
-    font-weight: 700;
-    &:disabled {
-      background: #e5e5e5;
-      cursor: default;
     }
   }
   a {

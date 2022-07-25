@@ -1,9 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineArrowRight } from 'react-icons/ai';
+
 import Form from '../components/Form';
+import Button from '../components/Button'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +16,7 @@ const Login = () => {
     formState: { isValid },
   } = useForm({ mode: 'onChange' });
 
-  const submitLogin = async (formData) => {
+  const onSubmitLogin = async (formData) => {
     const data = {
       username: formData.username,
       password: formData.password,
@@ -36,10 +39,10 @@ const Login = () => {
   };
 
   return (
-    <Form id="login-form" theme="login" onSubmit={handleSubmit(submitLogin)}>
+    <Form id="login-form" theme="login" onSubmit={handleSubmit(onSubmitLogin)}>
       <h2>로그인</h2>
 
-      <div>
+      <InputBox>
         <label>ID</label>
         <input
           type="text"
@@ -50,9 +53,9 @@ const Login = () => {
             minLength: 4,
           })}
         />
-      </div>
+      </InputBox>
 
-      <div>
+      <InputBox>
         <label>PASSWORD</label>
         <input
           type="password"
@@ -63,11 +66,11 @@ const Login = () => {
             minLength: 6,
           })}
         />
-      </div>
+      </InputBox>
 
-      <button type="submit" form="login-form" disabled={!isValid}>
+      <Button type="submit" form="login-form" disabled={!isValid}>
         로그인 HeyYo :)
-      </button>
+      </Button>
 
       <p>
         아직 계정이 없다면?
@@ -81,3 +84,9 @@ const Login = () => {
 };
 
 export default Login;
+
+const InputBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
