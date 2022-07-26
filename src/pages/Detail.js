@@ -2,11 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link, useParams } from 'react-router-dom';
-
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
+import { SERVER_BASE_URL } from '../constants';
 
 import { FiArrowLeft } from 'react-icons/fi';
 import { TbFaceId } from 'react-icons/tb';
@@ -37,21 +37,25 @@ const CategoryIcon = ({ category }) => {
 
 const Detail = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const category = useSelector((state) => state.category);
-  console.log(category);
 
-  const { register, handleSubmit } = useForm({ mode: 'onChange' });
+  const { register, handleSubmit, setValue } = useForm({
+    mode: 'onChange',
+  });
 
   // params.postId 파라미터로 가져온 작성글의 id값으로 해당하는 id 값의 글 가져오기
   const getPost = async () => {
     const res = await axios.get('http://localhost:5001/posts/' + params.postId);
+    // FIXME: const res = await axios.get(`${SERVER_BASE_URL}/post/${params.postId}`);
     return res.data;
   };
 
   // 댓글의 작성글의 postId값과 댓글의 postId값을 비교해서 일치하는 값만 com_list에 담기
   const getComment = async () => {
     const res = await axios.get('http://localhost:5001/comment');
+    // FIXME: const res = await axios.get(`${SERVER_BASE_URL}/comment/${params.postId}`);
     let com_list = [];
     res.data.forEach((d) => {
       if (params.postId == d.postId) {
@@ -68,24 +72,54 @@ const Detail = () => {
     let date = today.getDate(); // 날짜
     let now = year + '.' + month + '.' + date;
 
-    // 유저 토큰으로 닉네임
-    // let writer =
     const data = {
-      content: CommentData.content,
+      content: CommentData.commentContent,
       createdAt: now,
       postId: params.postId,
+      // FIXME: 닉네임은 mock API용 (추후 삭제)
       nickname: '테스트닉네임',
     };
 
     try {
       await axios.post('http://localhost:5001/comment', data);
       queryClient.invalidateQueries('comment');
-      CommentData.content = '';
+      setValue('commentContent', '');
     } catch (err) {
       console.log(err);
       alert('댓글 추가하기 실패했습니다.');
     }
   };
+
+  const removePost = async () => {
+    const result = confirm('게시글을 삭제 HeyYo?');
+    if (result) {
+      try {
+        await axios.delete('http://localhost:5001/posts/' + params.postId);
+        navigate('/');
+      } catch (err) {
+        console.log(err);
+        alert('게시글을 삭제하지 못했습니다.');
+      }
+    } else {
+      return;
+    }
+  };
+
+  const removeComment = async (CommentId) => {
+    const result = confirm('댓글을 삭제 HeyYo?');
+    if (result) {
+      try {
+        await axios.delete(`http://localhost:5001/comment/${CommentId}`);
+        queryClient.invalidateQueries('comment');
+      } catch (err) {
+        console.log(err);
+        alert('댓글을 삭제하지 못했습니다.');
+      }
+    } else {
+      return;
+    }
+  };
+
   const postInfo = useQuery(['post'], getPost).data;
   const comments = useQuery(['comment'], getComment).data;
   // console.log(category[postInfo.category][3]);
@@ -97,13 +131,15 @@ const Detail = () => {
   return (
     <MainContainer>
       <section>
-        <Link to="/">
-          <FiArrowLeft />
-        </Link>
+        <BtnBack>
+          <FiArrowLeft onClick={() => navigate(-1)} />
+        </BtnBack>
+
         <TitleBox color={category[postInfo.category][2]}>
           <CategoryIcon category={postInfo.category} />
-          <p>{postInfo.title}</p>
+          <h2>{postInfo.title}</h2>
         </TitleBox>
+
         <UserAndDate>
           <User>
             <TbFaceId />
@@ -116,15 +152,14 @@ const Detail = () => {
             </div>
           </User>
           <EditAndDelete>
-            <Link to="/">
+            <Link to={`/post/${params.postId}/edit`}>
               <RiEdit2Line />
             </Link>
-            <Link to="/">
-              <RiDeleteBin5Line />
-            </Link>
+            <RiDeleteBin5Line onClick={removePost} />
           </EditAndDelete>
         </UserAndDate>
-        <PostInfo style={{ marginTop: '60px' }}>
+
+        <PostInfo>
           <li>
             <span>모집 구분</span>
             <span>{category[postInfo.category][0]}</span>
@@ -142,6 +177,7 @@ const Detail = () => {
           <li>
             <span>연락 방법</span>
             <span>{postInfo.contactMethod}</span>
+            {/* FIXME: 긴 텍스트 CSS 수정 필요 */}
           </li>
         </PostInfo>
       </section>
@@ -149,288 +185,264 @@ const Detail = () => {
       <ContentAndComment>
         <PostContent>
           <h2>소개</h2>
+          {/* TODO: 개행문자 줄바꿈 처리 */}
           <div>{postInfo.content}</div>
+          <img src={postInfo.imageUrl} alt="" />
         </PostContent>
+
         <Comment>
+          <h2>댓글</h2>
           <CommentForm>
             <div>
-              <h1>{comments.length}개의 댓글이 있습니다.</h1>
+              <h3>{comments.length}개의 댓글이 있습니다.</h3>
               <textarea
                 placeholder="댓글을 입력하세요."
-                {...register('content', { required: 'true', minLength: 1 })}
+                {...register('commentContent', {
+                  required: 'true',
+                  minLength: 1,
+                })}
               />
               <button onClick={handleSubmit(submitComment)}>댓글 등록</button>
             </div>
           </CommentForm>
           <CommentSection>
-            {comments.length > 0 ? (
-              <CommentItem>
-                <div>
-                  <div>
-                    <TbFaceId />
-                  </div>
-                  <div>
-                    <div>{comments[0].nickname}</div>
-                    <div>{comments[0].createdAt}</div>
-                  </div>
-                </div>
-                <div>{comments[0].content}</div>
-              </CommentItem>
-            ) : (
-              <CommentItem>
-                <div>
-                  <div>
-                    <TbFaceId />
-                  </div>
-                  <div>
-                    <div>닉네임자리</div>
-                    <div>댓글작성시간</div>
-                  </div>
-                </div>
-                <div>내용</div>
-              </CommentItem>
-            )}
+            {comments &&
+              comments.map((d) => (
+                <CommentItem key={d.id}>
+                  <CommentUser>
+                    <div>
+                      <TbFaceId />
+                    </div>
+                    <div>
+                      <div>
+                        <div>{d.nickname}</div>
+                        <div>{d.createdAt}</div>
+                      </div>
+                      <div>
+                        <CommentDelBtn onClick={() => removeComment(d.id)}>
+                          삭제
+                        </CommentDelBtn>
+                      </div>
+                    </div>
+                  </CommentUser>
+                  <div>{d.content}</div>
+                </CommentItem>
+              ))}
           </CommentSection>
         </Comment>
-
-        {/* {comment_query.data.map((d) => {
-              return (
-                <div key={d.id}>
-                </div>
-              )
-            })} */}
-        {/* <div>{d.nickname}</div>
-      <div>{d.createdAt}</div> */}
-        {/* <p>{d.content}</p> */}
-        {/* <InputComment type="text" {...register('content', { required: 'true', minLength: 1})} />
-      <InputCommentBtn onClick={handleSubmit(submitComment)}>댓글달기</InputCommentBtn> */}
       </ContentAndComment>
     </MainContainer>
   );
 };
 
 const MainContainer = styled.div`
-  max-width: 900px;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 1.5rem 1.5rem 5rem;
+  padding: 1.5rem 1.5rem;
+`;
+
+const BtnBack = styled.button`
+  font-size: 25px;
 `;
 
 const TitleBox = styled.div`
   display: flex;
   align-items: center;
   margin-top: 2.5rem;
-  font-size: 1.5rem;
   font-weight: 800;
-  line-height: 126.5%;
-  letter-spacing: -0.005em;
-  color: #000;
+  letter-spacing: -0.1em;
+  color: #222;
   svg {
-    margin-right: 10px;
-    font-size: 40px;
+    margin-right: 12px;
     padding: 5px;
-    background: ${({ color }) => color};
     border-radius: 50%;
+    background: ${({ color }) => color};
+    font-size: 50px;
     color: #222;
+  }
+  h2 {
+    margin-top: 12px;
+    font-size: 2.2em;
   }
 `;
 
 const UserAndDate = styled.div`
-  margin-top: 32px;
-  padding-bottom: 32px;
-  border-bottom: 3px solid #f2f2f2;
   display: flex;
-  grid-gap: 15px;
-  gap: 15px;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #f2f2f2;
 `;
 
 const User = styled.div`
-  display: flex;
-  align-items: conter;
   position: relative;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
   svg {
+    display: block;
     width: 2rem;
     height: 2rem;
-    display: block;
     border-radius: 50%;
   }
   div {
-    font-size: 1rem;
-    color: #333;
-    font-weight: 700;
     padding: 5px 15px;
     border-right: 2px solid #e1e1e1;
-    font-weight: 800;
-    align-items: center;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 700;
   }
 `;
 
 const EditAndDelete = styled.div`
   font-size: 1.5rem;
-  a {
+  svg {
     margin: 5px;
+    cursor: pointer;
   }
 `;
 
 const PostInfo = styled.ul`
-  list-style: none;
-  padding: 0px;
   display: grid;
-  grid-template-columns: repeat(2, 6fr);
+  grid-template-columns: repeat(auto-fill, minmax(410px, 1fr));
   grid-row-gap: 16px;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-  padding-inline-start: 40px;
+  margin: 40px 10px 60px;
   li {
-    font-size: 20px;
-    display: flex;
     position: relative;
+    display: flex;
     align-items: center;
+    font-size: 20px;
     font-weight: 700;
   }
   li span:first-child {
-    color: #717171;
     margin-right: 40px;
+    color: #717171;
   }
 `;
 
 const ContentAndComment = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  h2 {
+    line-height: 1.7;
+  }
 `;
 
 const PostContent = styled.div`
-  margin-top: 132px;
-  font-size: 1.125rem;
-  word-break: break-all;
-  line-height: 1.7;
-  letter-spacing: -0.004em;
   display: block;
   width: 60%;
+  max-width: 500px;
+  word-break: break-all;
+  font-size: 1.125rem;
   h2 {
     margin-right: 10px;
+    border-bottom: 3px solid #f2f2f2;
     font-size: 24px;
     font-weight: 700;
-    padding-bottom: 24px;
-    border-bottom: 3px solid #f2f2f2;
   }
   div {
     width: 100%;
-    margin: 40px auto 0;
+    margin: 20px auto 0;
+  }
+  img {
+    display: block;
+    margin: 20px auto 0;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 5px;
+  }
+  @media only screen and (max-width: 916px) {
+    width: 100%;
+    max-width: 100%;
   }
 `;
 
 const Comment = styled.section`
   display: flex;
   flex-direction: column;
-  background: #fff;
   width: 40%;
-  margin-top: 100px;
+  max-width: 322px;
+  background: #fff;
+  h2 {
+    border-bottom: 3px solid #f2f2f2;
+  }
+  @media only screen and (max-width: 916px) {
+    width: 100%;
+    max-width: 100%;
+  }
 `;
 
 const CommentForm = styled.form`
-  border: 3px solid red;
   width: 100%;
   margin: 0 auto;
   div {
     display: flex;
     flex-direction: column;
-    /* justify-content: space-between; */
-    h1 {
+    h3 {
       font-size: 1.25rem;
-      margin: 0 0 20px;
+      margin: 20px 0;
     }
     textarea {
-      padding: 1rem 1rem 1.5rem;
-      outline: none;
-      border: 2px solid #e1e1e1;
-      border-radius: 16px;
+      resize: none;
       width: 100%;
       min-height: 100px;
       margin-bottom: 10px;
-      resize: none;
+      padding: 1rem 1rem 1.5rem;
+      border: 2px solid #e1e1e1;
+      border-radius: 16px;
       font-size: 1rem;
     }
     button {
+      width: 120px;
+      height: 40px;
       margin: 0px auto;
       padding: 7px 10px;
-      width: 90px;
-      height: 30px;
-      background: #333;
       border-radius: 40px;
-      font-weight: 700;
+      background: #333;
       color: #fff;
-      font-size: 12px;
+      font-weight: 700;
+      font-size: 18px;
     }
   }
 `;
 
 const CommentSection = styled.div`
-  border: 3px solid black;
+  margin-top: 20px;
 `;
 
 const CommentItem = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 1rem 1rem 1.5rem;
+  margin-bottom: 5px;
+  border: 2px solid #e1e1e1;
+  border-radius: 16px;
   div {
     display: flex;
+    margin: 3px;
   }
 `;
 
-const BodyBox = styled.div`
-  margin-top: 100px;
-  border: 2px solid red;
-  display: flex;
+const CommentUser = styled.div`
+  align-items: center;
+  div {
+    font-size: 16px;
+    font-weight: 700;
+  }
 `;
 
-const ContentBox = styled.div`
-  width: 50%;
-  border: 2px solid green;
+const CommentDelBtn = styled.button`
+  padding: 2px;
+  border: 2px solid #e1e1e1;
+  border-radius: 5px;
+  background: #e1e1e1;
+  font-weight: 700;
 `;
-
-const ContentInfo = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border: 2px solid blue;
-`;
-
-const Content = styled.div`
-  border: 2px solid yellow;
-`;
-
-const CommentBox = styled.div`
-  width: 50%;
-  border: 2px solid green;
-`;
-
-const InputCommentBox = styled.div`
-  display: inline-block;
-  padding: 5px;
-  border: solid 1px #ccc;
-  background: #f4f4f4;
-  font-size: 9pt;
-`;
-
-const InputComment = styled.input`
-  width: 100px;
-  padding: 3px;
-  border: 0;
-  font-size: 9pt;
-`;
-
-const InputCommentBtn = styled.button`
-  width: 50px;
-  padding: 3px;
-  border: solid 1px #6699ff;
-  font-size: 9pt;
-`;
-
-const Comments = styled.div``;
 
 export default Detail;
