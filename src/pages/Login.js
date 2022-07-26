@@ -3,10 +3,11 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { AiOutlineArrowRight } from 'react-icons/ai';
 
+import { SERVER_BASE_URL } from '../constants';
 import Form from '../components/Form';
-import Button from '../components/Button'
+import Button from '../components/Button';
+import { AiOutlineArrowRight } from 'react-icons/ai';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,13 +24,9 @@ const Login = () => {
     };
 
     try {
-      const res = await axios.post('http://localhost:5001/api/login', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      // TODO: 백엔드 response 받아서 한번더 검증하는 로직 추가
+      const res = await axios.post(`${SERVER_BASE_URL}/login`, data);
       console.log(res);
+      // TODO: sessionStorage.setItem()
       alert('환영HeyYo :)');
       navigate('/');
     } catch (err) {

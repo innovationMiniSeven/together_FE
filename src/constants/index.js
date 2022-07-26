@@ -1,0 +1,1 @@
+export const SERVER_BASE_URL = 'http://13.125.250.104/api';
