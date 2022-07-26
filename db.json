@@ -133,6 +133,51 @@
       "nickname": "헤이요프론트",
       "createdAt": 1658804597205,
       "id": 6
+    },
+    {
+      "title": "공구 이미지 없는 글 테스트",
+      "content": "공동구매 테스트",
+      "category": "PURCHASE",
+      "deadline": "2022-07-31",
+      "numberPeople": 4,
+      "currentNumberPeople": 1,
+      "contactMethod": "010-1234-5678",
+      "imageUrl": "",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658817171670,
+      "id": 7
+    },
+    {
+      "title": "공연전시회 이미지없는 글 테스트",
+      "content": "ㅎㅇㅎㅇ",
+      "category": "EXHIBITION",
+      "deadline": "2022-07-30",
+      "numberPeople": 3,
+      "currentNumberPeople": 2,
+      "contactMethod": "댓글",
+      "imageUrl": "",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658817244398,
+      "id": 8
+    },
+    {
+      "title": "기타 이미지 없는 글 테스트",
+      "content": "댓글 남겨주세요",
+      "category": "ETC",
+      "deadline": "2022-07-28",
+      "numberPeople": 4,
+      "currentNumberPeople": 2,
+      "contactMethod": "오픈카톡방",
+      "imageUrl": "",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658817435030,
+      "id": 9
     }
   ],
   "comment": [
@@ -170,6 +215,48 @@
       "postId": "2",
       "nickname": "테스트닉네임",
       "id": 5
+    },
+    {
+      "content": "잘되나요",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 6
+    },
+    {
+      "content": "테스트입니다",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 7
+    },
+    {
+      "content": "테스트입니다~",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 8
+    },
+    {
+      "content": "댓글 초기화 테스트",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 9
+    },
+    {
+      "content": "댓글창 초기화",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 10
+    },
+    {
+      "content": "댓글창..",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 11
     }
   ]
 }

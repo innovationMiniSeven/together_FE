@@ -34,6 +34,7 @@ const HeaderComponent = styled.header`
   height: 70px;
   padding: 0 25px;
   background: #f1f1f1;
+  z-index: 100;
   a {
     display: flex;
     align-items: center;

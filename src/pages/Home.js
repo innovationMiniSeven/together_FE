@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
   const getPostList = async () => {
@@ -11,12 +12,7 @@ const Home = () => {
   };
 
   const postList = useQuery(['postList'], getPostList);
-  const category = {
-    PURCHASE: '공동구매',
-    DELIVERY: '배달',
-    EXHIBITION: '공연/전시회',
-    ETC: '기타',
-  };
+  const category = useSelector((state) => state.category);
 
   return (
     <>
@@ -45,13 +41,16 @@ const Home = () => {
               <PostItem key={d.id}>
                 <Link to={`/post/${d.id}`}>
                   <p>마감예정일 : {d.deadline}</p>
-                  <p>카테고리 : {category[d.category]}</p>
+                  <p>카테고리 : {category[d.category][0]}</p>
                   <p>제목 : {d.title}</p>
-                  <Image src={d.imageUrl} alt="" />
+                  {d.imageUrl ? (
+                    <Image src={d.imageUrl} alt="" />
+                  ) : (
+                    <Image src={category[d.category][1]} alt="" />
+                  )}
                   <p>
                     모집인원: {d.currentNumberPeople}/{d.numberPeople}
                   </p>
-                  <p>연락방법 : {d.contactMethod}</p>
                   <p>글쓴이 : {d.nickname}</p>
                   <p>조회수 : {d.viewCount}</p>
                   <p>댓글수 : {d.commentCount}</p>
@@ -71,7 +70,7 @@ const BannerSection = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5vw;
+  gap: 10px;
   flex-wrap: wrap;
   padding: 50px 30px;
   background: rgba(242, 185, 12, 0.3);
@@ -85,7 +84,7 @@ const Content = styled.div`
   em {
     display: block;
     span {
-      font-size: 50px;
+      font-size: 45px;
     }
   }
   &.banner-title {
@@ -93,14 +92,25 @@ const Content = styled.div`
     color: #222;
     text-align: center;
     text-decoration: underline;
-    font-size: 50px;
+    font-size: 56.5px;
     min-width: 310px;
   }
-  @media only screen and (max-width: 855px) {
+  @media only screen and (max-width: 1024px) {
     em {
       font-size: 24px;
       span {
         font-size: 40px;
+      }
+    }
+  }
+  @media only screen and (max-width: 425px) {
+    &.banner-title {
+      font-size: 35px;
+    }
+    em {
+      font-size: 18px;
+      span {
+        font-size: 30px;
       }
     }
   }
@@ -110,11 +120,13 @@ const PostsSection = styled.section`
   display: flex;
   justify-content: center;
   max-width: 1440px;
+  margin: 0 auto;
   padding: 30px;
 `;
 
 const PostList = styled.ul`
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 15px;
 `;
@@ -124,11 +136,15 @@ const PostItem = styled.li`
   justify-content: center;
   flex-direction: column;
   padding: 10px;
-  border: 1px solid #f1f1f1;
-  border-radius: 10px;
-  transition: background 0.2s ease-in-out;
+  border: 2px solid #f2f2f2;
+  border-radius: 20px;
+  transition: all 0.2s ease-in-out;
   &:hover {
+    transform: scale(102%);
     background: #f1f1f1;
+  }
+  @media only screen and (max-width: 735px) {
+    width: 100%;
   }
 `;
 
