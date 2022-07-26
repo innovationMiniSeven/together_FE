@@ -45,53 +45,38 @@
   ],
   "posts": [
     {
-      "id": 1,
-      "title": "공동구매합니다",
+      "title": "공동구매합니다이~(수정)",
+      "content": "공구할사람 손들어라~",
       "category": "PURCHASE",
       "deadline": "2022-07-23",
       "numberPeople": 4,
-      "currentNumberPeople": 1,
-      "contactMethod": "email",
-      "viewCount": 3,
-      "commentCount": 0,
-      "nickname": "test",
-      "imageUrl": "https://velog.velcdn.com/images/kimhyo_0218/post/cdab776f-8cdf-4fd0-9e9f-5f59ad8d5b69/reactquery_logo.png",
-      "content": "공구할사람 손들어라~",
-      "createdAt": 1658802726419
-    },
-    {
-      "id": 2,
-      "title": "공연 같이 보실분",
-      "category": "EXHIBITION",
-      "deadline": "2022-07-25",
-      "numberPeople": 3,
       "currentNumberPeople": 2,
-      "contactMethod": "오픈카톡방",
-      "viewCount": 1,
+      "contactMethod": "email",
+      "imageUrl": "https://velog.velcdn.com/images/kimhyo_0218/post/cdab776f-8cdf-4fd0-9e9f-5f59ad8d5b69/reactquery_logo.png",
+      "viewCount": 0,
       "commentCount": 0,
-      "nickname": "testtest",
-      "imageUrl": "https://images.velog.io/images/cyheum/post/37534693-2ae7-4134-91ab-af7eb74b7efb/react-logo.png",
-      "content": "멜로망스..... 영접하고시퍼요",
-      "createdAt": 1658802730034
+      "nickname": "헤이요프론트",
+      "createdAt": 1658829944112,
+      "id": 1
     },
     {
-      "title": "심심한사람 전시회같이가요",
+      "title": "심심한사람 전시회같이가요 (수정의 수정)",
+      "content": "전시회 함께하실 분~ 오픈카톡방으로 오세요",
       "category": "EXHIBITION",
       "deadline": "2022-07-27",
       "numberPeople": 2,
       "currentNumberPeople": 1,
       "contactMethod": "오픈카톡방",
-      "viewCount": 5,
-      "commentCount": 1,
-      "nickname": "백수",
       "imageUrl": "https://blog.kakaocdn.net/dn/bLLREg/btrbhYLdx4M/w3BWXIjm185YfkGITrU9HK/img.jpg",
-      "id": 3,
-      "content": "전시회 함께하실 분~ 오픈카톡방으로 오세요",
-      "createdAt": 1658802734390
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658845068143,
+      "id": 3
     },
     {
-      "title": "치킨 뜯자!",
-      "content": "오징어톡 제공해드림",
+      "title": "치킨 뜯으실 분!",
+      "content": "오징어톡 & 맥주 제공해드림",
       "category": "DELIVERY",
       "deadline": "2022-07-26",
       "numberPeople": 3,
@@ -101,7 +86,7 @@
       "viewCount": 0,
       "commentCount": 0,
       "nickname": "헤이요프론트",
-      "createdAt": 1658802835481,
+      "createdAt": 1658837550159,
       "id": 4
     },
     {
@@ -150,7 +135,7 @@
       "id": 7
     },
     {
-      "title": "공연전시회 이미지없는 글 테스트",
+      "title": "공연전시회 이미지없는 글 테스트 긴 제목",
       "content": "ㅎㅇㅎㅇ",
       "category": "EXHIBITION",
       "deadline": "2022-07-30",
@@ -161,23 +146,38 @@
       "viewCount": 0,
       "commentCount": 0,
       "nickname": "헤이요프론트",
-      "createdAt": 1658817244398,
+      "createdAt": 1658843873560,
       "id": 8
     },
     {
-      "title": "기타 이미지 없는 글 테스트",
-      "content": "댓글 남겨주세요",
-      "category": "ETC",
-      "deadline": "2022-07-28",
-      "numberPeople": 4,
+      "title": "사진 없는 글 사진 추가하기 테스트",
+      "content": "과연 잘 붙을 것인가",
+      "category": "EXHIBITION",
+      "deadline": "2022-07-26",
+      "numberPeople": 2,
       "currentNumberPeople": 2,
-      "contactMethod": "오픈카톡방",
+      "contactMethod": "댓글",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/heyyo-d84c2.appspot.com/o/images%2Ftogether.jpeg?alt=media&token=699a608f-9f86-4923-846a-bb35872ff072",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658838365526,
+      "id": 10
+    },
+    {
+      "title": "긴 URL 테스트",
+      "content": "과연 2줄이 될 것인가?",
+      "category": "ETC",
+      "deadline": "2022-08-01",
+      "numberPeople": 3,
+      "currentNumberPeople": 2,
+      "contactMethod": "http://naver.com/test/test/test/123/123/test/123",
       "imageUrl": "",
       "viewCount": 0,
       "commentCount": 0,
       "nickname": "헤이요프론트",
-      "createdAt": 1658817435030,
-      "id": 9
+      "createdAt": 1658842801433,
+      "id": 11
     }
   ],
   "comment": [
@@ -203,46 +203,11 @@
       "id": 3
     },
     {
-      "content": "테스트 댓글",
-      "createdAt": "2022.7.25",
-      "postId": "3",
-      "nickname": "테스트닉네임",
-      "id": 4
-    },
-    {
-      "content": "멜로망스!!!",
-      "createdAt": "2022.7.25",
-      "postId": "2",
-      "nickname": "테스트닉네임",
-      "id": 5
-    },
-    {
-      "content": "잘되나요",
-      "createdAt": "2022.7.26",
-      "postId": "3",
-      "nickname": "테스트닉네임",
-      "id": 6
-    },
-    {
-      "content": "테스트입니다",
-      "createdAt": "2022.7.26",
-      "postId": "3",
-      "nickname": "테스트닉네임",
-      "id": 7
-    },
-    {
       "content": "테스트입니다~",
       "createdAt": "2022.7.26",
       "postId": "3",
       "nickname": "테스트닉네임",
       "id": 8
-    },
-    {
-      "content": "댓글 초기화 테스트",
-      "createdAt": "2022.7.26",
-      "postId": "3",
-      "nickname": "테스트닉네임",
-      "id": 9
     },
     {
       "content": "댓글창 초기화",
@@ -257,6 +222,27 @@
       "postId": "3",
       "nickname": "테스트닉네임",
       "id": 11
+    },
+    {
+      "content": "치킨조아",
+      "createdAt": "2022.7.26",
+      "postId": "4",
+      "nickname": "테스트닉네임",
+      "id": 16
+    },
+    {
+      "content": "가나다라",
+      "createdAt": "2022.7.26",
+      "postId": "7",
+      "nickname": "테스트닉네임",
+      "id": 17
+    },
+    {
+      "content": "댓글에 진심인 편",
+      "createdAt": "2022.7.26",
+      "postId": "3",
+      "nickname": "테스트닉네임",
+      "id": 18
     }
   ]
 }

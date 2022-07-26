@@ -1,25 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { storage } from '../shared/firebase';
 import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { SERVER_BASE_URL } from '../constants';
 
 import Button from '../components/Button';
 import { MdAddPhotoAlternate } from 'react-icons/md';
 
 const Post = () => {
+  const postId = useParams()?.postId;
   const navigate = useNavigate();
   const [imgSrc, setImgSrc] = useState('');
 
   const {
     register,
     handleSubmit,
+    setValue,
+    setFocus,
     formState: { isValid },
   } = useForm({
     mode: 'all',
   });
+
+  useEffect(() => {
+    if (postId) {
+      const setPost = async () => {
+        const postInfo = await axios.get(
+          `http://localhost:5001/posts/${postId}`,
+        );
+        // FIXME:
+        // const postInfo = await axios.get(
+        //   `${SERVER_BASE_URL}/post/${postId}`,
+        // );
+
+        const data = postInfo.data;
+        setValue('title', data.title);
+        setValue('content', data.content);
+        setValue('category', data.category);
+        setValue('deadline', data.deadline);
+        setValue('currentNumberPeople', data.currentNumberPeople);
+        setValue('numberPeople', data.numberPeople);
+        setValue('contactMethod', data.contactMethod);
+        setImgSrc(data.imageUrl);
+      };
+      setPost();
+      setFocus('title');
+    }
+  }, []);
 
   const previewImage = async (e) => {
     const image = e.target.files[0];
@@ -42,6 +72,8 @@ const Post = () => {
         formData.postImg[0],
       );
       imageUrl = await getDownloadURL(uploadedFile.ref);
+    } else if (postId) {
+      imageUrl = imgSrc;
     } else {
       imageUrl = '';
     }
@@ -55,7 +87,7 @@ const Post = () => {
       currentNumberPeople: parseInt(formData.currentNumberPeople),
       contactMethod: formData.contactMethod,
       imageUrl,
-      // FIXME: 이 밑으로는 필요 없음 (mock API용)
+      // FIXME: 이 밑으로는 mock API용 (추후 삭제)
       viewCount: 0,
       commentCount: 0,
       nickname: '헤이요프론트',
@@ -63,20 +95,41 @@ const Post = () => {
     };
     console.log(newPost);
 
-    try {
-      const res = await axios.post('http://localhost:5001/posts', newPost);
-      console.log(res);
-      alert('게시글이 등록되었습니다!');
-      navigate('/');
-    } catch (e) {
-      console.log(e);
+    if (!postId) {
+      try {
+        const res = await axios.post('http://localhost:5001/posts', newPost);
+        // FIXME:
+        // const res = await axios.post(`${SERVER_BASE_URL}/post`, newPost);
+        console.log(res);
+        alert('게시글이 등록되었습니다!');
+        navigate('/');
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        const res = await axios.put(
+          `http://localhost:5001/posts/${postId}`,
+          newPost,
+        );
+        // FIXME:
+        // const res = await axios.put(
+        //   ${SERVER_BASE_URL}/post/${postId}`,
+        //   newPost,
+        // );
+        console.log(res);
+        alert('게시글이 수정되었습니다!');
+        navigate(`/post/${postId}`);
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
   return (
     <article>
       <PostForm onSubmit={handleSubmit(onSubmitPost)}>
-        <h2>게시글 작성</h2>
+        <h2>게시글 {postId ? '수정' : '작성'}</h2>
 
         <Row>
           <label>
@@ -186,7 +239,7 @@ const Post = () => {
         </Preview>
 
         <Button type="submit" disabled={!isValid}>
-          게시글 등록 HeyYo :)
+          게시글 {postId ? '수정' : '등록'} HeyYo :)
         </Button>
       </PostForm>
     </article>

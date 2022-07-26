@@ -13,7 +13,7 @@ const Button = ({ children, type, form, disabled }) => {
 export default Button;
 
 Button.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.any,
   type: PropTypes.string,
   form: PropTypes.string,
   disabled: PropTypes.bool,
