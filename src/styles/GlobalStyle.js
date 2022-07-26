@@ -18,8 +18,8 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  h1 {
-    font-family: 'LeferiPoint-BlackObliqueA';
+  h1, h2, strong {
+    font-family: 'LeferiPoint-BlackObliqueA' !important;
   }
 
   a {

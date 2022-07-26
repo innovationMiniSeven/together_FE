@@ -41,8 +41,7 @@ const HeaderComponent = styled.header`
       font-size: 40px;
     }
     h1 {
-      font-family: 'LeferiPoint-BlackObliqueA';
-      padding-top: 2px;
+      padding-top: 15px;
       font-size: 2.2em;
       color: #222;
       img {

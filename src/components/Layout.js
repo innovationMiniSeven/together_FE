@@ -15,5 +15,5 @@ const Layout = () => {
 export default Layout;
 
 const Main = styled.main`
-  padding: 90px 20px 40px;
+  padding: 70px 0 40px;
 `;
