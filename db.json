@@ -48,7 +48,7 @@
       "id": 1,
       "title": "공동구매합니다",
       "category": "PURCHASE",
-      "deadline": "2022.07.23",
+      "deadline": "2022-07-23",
       "numberPeople": 4,
       "currentNumberPeople": 1,
       "contactMethod": "email",
@@ -57,13 +57,13 @@
       "nickname": "test",
       "imageUrl": "https://velog.velcdn.com/images/kimhyo_0218/post/cdab776f-8cdf-4fd0-9e9f-5f59ad8d5b69/reactquery_logo.png",
       "content": "공구할사람 손들어라~",
-      "createdAt": "2022.07.17"
+      "createdAt": 1658802726419
     },
     {
       "id": 2,
       "title": "공연 같이 보실분",
       "category": "EXHIBITION",
-      "deadline": "2022.07.25",
+      "deadline": "2022-07-25",
       "numberPeople": 3,
       "currentNumberPeople": 2,
       "contactMethod": "오픈카톡방",
@@ -72,12 +72,12 @@
       "nickname": "testtest",
       "imageUrl": "https://images.velog.io/images/cyheum/post/37534693-2ae7-4134-91ab-af7eb74b7efb/react-logo.png",
       "content": "멜로망스..... 영접하고시퍼요",
-      "createdAt": "2022.07.22"
+      "createdAt": 1658802730034
     },
     {
       "title": "심심한사람 전시회같이가요",
       "category": "EXHIBITION",
-      "deadline": "2022.07.27",
+      "deadline": "2022-07-27",
       "numberPeople": 2,
       "currentNumberPeople": 1,
       "contactMethod": "오픈카톡방",
@@ -87,7 +87,52 @@
       "imageUrl": "https://blog.kakaocdn.net/dn/bLLREg/btrbhYLdx4M/w3BWXIjm185YfkGITrU9HK/img.jpg",
       "id": 3,
       "content": "전시회 함께하실 분~ 오픈카톡방으로 오세요",
-      "createdAt": "2022.07.23"
+      "createdAt": 1658802734390
+    },
+    {
+      "title": "치킨 뜯자!",
+      "content": "오징어톡 제공해드림",
+      "category": "DELIVERY",
+      "deadline": "2022-07-26",
+      "numberPeople": 3,
+      "currentNumberPeople": 1,
+      "contactMethod": "010-1234-5678",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/heyyo-d84c2.appspot.com/o/images%2F6624cd093_700x700_95_FIT.jpg?alt=media&token=0dbfbcf5-403f-4f46-bc1f-867b4fe62261",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658802835481,
+      "id": 4
+    },
+    {
+      "title": "짜장면 같이 시켜드실분?",
+      "content": "요리도 하나 추가해서 나눠먹어요!",
+      "category": "DELIVERY",
+      "deadline": "2022-07-26",
+      "numberPeople": 2,
+      "currentNumberPeople": 1,
+      "contactMethod": "댓글 남겨주세요!",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/heyyo-d84c2.appspot.com/o/images%2F%EA%B0%95%EC%95%84%EC%A7%80%EC%82%AC%EC%A7%84.jpg?alt=media&token=32d319ac-700d-4bfe-92a5-3e8824b9746b",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658804061172,
+      "id": 5
+    },
+    {
+      "title": "이미지 없는 글 테스트",
+      "content": "이미지 없을 때 처리",
+      "category": "DELIVERY",
+      "deadline": "2022-07-26",
+      "numberPeople": 2,
+      "currentNumberPeople": 1,
+      "contactMethod": "댓글",
+      "imageUrl": "",
+      "viewCount": 0,
+      "commentCount": 0,
+      "nickname": "헤이요프론트",
+      "createdAt": 1658804597205,
+      "id": 6
     }
   ],
   "comment": [
@@ -101,14 +146,14 @@
     {
       "content": "몇시에 모이나요?",
       "nickname": "전시회전국일주",
-      "createdAt": "2022.07.22",
+      "createdAt": "2022.7.22",
       "postId": "3",
       "id": 2
     },
     {
       "content": "저도 살래요",
       "nickname": "미니멀리즘",
-      "createdAt": "2022.07.21",
+      "createdAt": "2022.7.21",
       "postId": "1",
       "id": 3
     },
@@ -118,6 +163,13 @@
       "postId": "3",
       "nickname": "테스트닉네임",
       "id": 4
+    },
+    {
+      "content": "멜로망스!!!",
+      "createdAt": "2022.7.25",
+      "postId": "2",
+      "nickname": "테스트닉네임",
+      "id": 5
     }
   ]
 }

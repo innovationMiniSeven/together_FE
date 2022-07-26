@@ -1,23 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
+import { storage } from '../shared/firebase';
+import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
+import { useNavigate } from 'react-router-dom';
 
 import Button from '../components/Button';
+import { MdAddPhotoAlternate } from 'react-icons/md';
 
 const Post = () => {
+  const navigate = useNavigate();
+  const [imgSrc, setImgSrc] = useState('');
+
   const {
     register,
-    setValue,
     handleSubmit,
     formState: { isValid },
   } = useForm({
     mode: 'all',
   });
 
+  const previewImage = async (e) => {
+    const image = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImgSrc(reader.result);
+        resolve();
+      };
+    });
+  };
+
   const onSubmitPost = async (formData) => {
-    console.log(formData);
-    // TODO: 날짜 "yyyy-mm-dd" 형태로 수정
-    // TODO: numberPeople, currentNumberPeople 타입 number로 수정
+    let imageUrl;
+    if (formData.postImg.length > 0) {
+      const uploadedFile = await uploadBytes(
+        ref(storage, `images/${formData.postImg[0].name}`),
+        formData.postImg[0],
+      );
+      imageUrl = await getDownloadURL(uploadedFile.ref);
+    } else {
+      imageUrl = '';
+    }
+
+    const newPost = {
+      title: formData.title,
+      content: formData.content,
+      category: formData.category,
+      deadline: formData.deadline,
+      numberPeople: parseInt(formData.numberPeople),
+      currentNumberPeople: parseInt(formData.currentNumberPeople),
+      contactMethod: formData.contactMethod,
+      imageUrl,
+      // FIXME: 이 밑으로는 필요 없음 (mock API용)
+      viewCount: 0,
+      commentCount: 0,
+      nickname: '헤이요프론트',
+      createdAt: Date.now(),
+    };
+    console.log(newPost);
+
+    try {
+      const res = await axios.post('http://localhost:5001/posts', newPost);
+      console.log(res);
+      alert('게시글이 등록되었습니다!');
+      navigate('/');
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -61,7 +114,7 @@ const Post = () => {
               <input
                 type="number"
                 placeholder="현재 인원"
-                {...register('numberPeople', {
+                {...register('currentNumberPeople', {
                   required: true,
                 })}
               />
@@ -69,7 +122,7 @@ const Post = () => {
               <input
                 type="number"
                 placeholder="전체 인원"
-                {...register('currentNumberPeople', {
+                {...register('numberPeople', {
                   required: true,
                 })}
               />
@@ -106,6 +159,8 @@ const Post = () => {
           </label>
           <ContentArea
             placeholder="내용을 입력해 주세요"
+            spellCheck="false"
+            wrap="hard"
             {...register('content', {
               required: true,
             })}
@@ -114,7 +169,21 @@ const Post = () => {
 
         <Row>
           <label>사진 첨부(선택)</label>
+          <input
+            id="postImg"
+            type="file"
+            accept="image/*"
+            hidden
+            {...register('postImg', {
+              onChange: (e) => previewImage(e),
+            })}
+          />
         </Row>
+        <Preview>
+          <ImageLabel htmlFor="postImg">
+            {imgSrc ? <img src={imgSrc} alt="" /> : <MdAddPhotoAlternate />}
+          </ImageLabel>
+        </Preview>
 
         <Button type="submit" disabled={!isValid}>
           게시글 등록 HeyYo :)
@@ -136,13 +205,13 @@ const PostForm = styled.form`
   h2 {
     display: inline-block;
     border-bottom: 3px solid #f2a30f;
-    font-family: 'LeferiPoint-BlackObliqueA' !important;
-    margin: 30px auto 40px;
+    margin: 60px auto 40px;
   }
   input {
     width: 80px;
   }
   button {
+    margin: 60px 0 20px;
     width: 80%;
   }
 `;
@@ -199,4 +268,31 @@ const Col = styled.li`
 const ContentArea = styled.textarea`
   height: 100px;
   resize: none;
+`;
+
+const Preview = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  max-width: 400px;
+`;
+
+const ImageLabel = styled.label`
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  background: #f1f1f1;
+  cursor: pointer;
+  svg {
+    margin: 50px 100px;
+    font-size: 90px;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
