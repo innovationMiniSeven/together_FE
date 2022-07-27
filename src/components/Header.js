@@ -6,7 +6,7 @@ import { TbFaceId } from 'react-icons/tb';
 import axios from 'axios';
 
 const Header = () => {
-  // TODO: 최초 1번 닉네임 받아와서 state 저장하기
+  // TODO: 최초 1번 닉네임 받아와서 state 저장하기 or react-query
   const [nickname, setNickname] = useState('');
 
   useEffect(() => {
@@ -32,11 +32,19 @@ const Header = () => {
         </h1>
       </Link>
       <Navbar>
-        <UserInfo>{nickname}님 환영합니다</UserInfo>
-        <Link to="/post">게시글작성</Link>
-        <Link to="/mypage">마이페이지</Link>
-        <button onClick={handleLogout}>로그아웃</button>
-        <Link to="/login">로그인</Link>
+        {!nickname ? (
+          <>
+            <UserInfo>{nickname}님 환영해요 :)</UserInfo>
+            <Link to="/post">게시글작성</Link>
+            <Link to="/mypage">내작성글</Link>
+            <button onClick={handleLogout}>로그아웃</button>
+          </>
+        ) : (
+          <>
+            <Link to="/join">회원가입</Link>
+            <Link to="/login">로그인</Link>
+          </>
+        )}
       </Navbar>
     </HeaderComponent>
   );
@@ -77,11 +85,13 @@ const Navbar = styled.nav`
   display: flex;
   align-items: center;
   gap: 15px;
-  a {
+  a,
+  button {
     padding: 5px 10px;
     border-radius: 5px;
     background: #222;
     color: #fff;
+    font-size: 16px;
     &:last-child {
       background: #f2b90c;
       color: #222;
