@@ -45,15 +45,15 @@ const Detail = () => {
   });
 
   const getPost = async () => {
-    // const res = await axios.get('http://localhost:5001/posts/' + params.postId);
-    const res = await axios.get(`http://13.125.250.104/api/post/${params.postId}`);
+    const res = await axios.get('http://localhost:5001/posts/' + params.postId);
+    // const res = await axios.get(`http://13.125.250.104/api/post/${params.postId}`);
     console.log('게시글', res.data);
     return res.data;
   };
 
   const getComment = async () => {
-    // const res = await axios.get('http://localhost:5001/comment');
-    const res = await axios.get(`http://13.125.250.104/api/comment/${params.postId}`);
+    const res = await axios.get('http://localhost:5001/comment');
+    // const res = await axios.get(`http://13.125.250.104/api/comment/${params.postId}`);
     console.log(res);
     console.log('댓글', res.data);
     return res.data;
@@ -73,7 +73,10 @@ const Detail = () => {
     };
 
     try {
-      await axios.post(`http://13.125.250.104/api/comment/${params.postId}`, data);
+      await axios.post(
+        `http://13.125.250.104/api/comment/${params.postId}`,
+        data,
+      );
       queryClient.invalidateQueries('comment');
       setValue('commentContent', '');
     } catch (err) {
@@ -87,8 +90,8 @@ const Detail = () => {
     if (result) {
       try {
         await axios.delete(`http://13.125.250.104/api/post/${params.postId}`);
-        // FIXME: 
-        alert('게시글을 삭제했습니다.')
+        // FIXME:
+        alert('게시글을 삭제했습니다.');
         navigate('/');
       } catch (err) {
         console.log(err);
@@ -159,21 +162,21 @@ const Detail = () => {
 
         <PostInfo>
           <li>
-            <span>모집 구분</span>
+            <span className="subcategory">모집 구분</span>
             <span>{category[postInfo.category][0]}</span>
           </li>
           <li>
-            <span>모집 인원</span>
+            <span className="subcategory">모집 인원</span>
             <span>
               {postInfo.currentNumberPeople} / {postInfo.numberPeople}
             </span>
           </li>
           <li>
-            <span>마감 일자</span>
-            <span>{postInfo.deadline.slice(0,10)}</span>
+            <span className="subcategory">마감 일자</span>
+            <span>{postInfo.deadline.slice(0, 10)}</span>
           </li>
           <li>
-            <span>연락 방법</span>
+            <span className="subcategory">연락 방법</span>
             <span>{postInfo.contactMethod}</span>
             {/* FIXME: 긴 텍스트 CSS 수정 필요 */}
           </li>
@@ -183,14 +186,16 @@ const Detail = () => {
       <ContentAndComment>
         <PostContent>
           <h2>소개</h2>
-          <div>{postInfo.content.split("\n").map((line, idx) => {
-            return (
-              <span key={idx}>
-                {line}
-                <br />
-              </span>
-            )
-          })}</div>
+          <div>
+            {postInfo.content.split('\n').map((line, idx) => {
+              return (
+                <>
+                  <p key={idx}>{line}</p>
+                  <br />
+                </>
+              );
+            })}
+          </div>
           <img src={postInfo.imageUrl} alt="" />
         </PostContent>
 
@@ -220,7 +225,7 @@ const Detail = () => {
                     <div>
                       <div>
                         <div>{d.nickname}</div>
-                        <div>{d.createdAt.slice(0,10)}</div>
+                        <div>{d.createdAt.slice(0, 10)}</div>
                       </div>
                       <div>
                         <CommentDelBtn onClick={() => removeComment(d.id)}>
@@ -260,6 +265,7 @@ const TitleBox = styled.div`
   letter-spacing: -0.1em;
   color: #222;
   svg {
+    min-width: 50px;
     margin-right: 12px;
     padding: 5px;
     border-radius: 50%;
@@ -319,13 +325,14 @@ const PostInfo = styled.ul`
   li {
     position: relative;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     font-size: 20px;
     font-weight: 700;
-  }
-  li span:first-child {
-    margin-right: 40px;
-    color: #717171;
+    span.subcategory {
+      min-width: 73.75px;
+      margin-right: 40px;
+      color: #717171;
+    }
   }
 `;
 
