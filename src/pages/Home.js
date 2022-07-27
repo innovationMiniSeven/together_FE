@@ -3,12 +3,9 @@ import axios from 'axios';
 import styled, { css } from 'styled-components';
 import { useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { TbFaceId } from 'react-icons/tb';
-import { AiOutlineEye } from 'react-icons/ai';
-import { FaRegComment } from 'react-icons/fa';
 import Loading from '../components/Loading';
+import PostItem from '../components/PostItem';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
   const [selectedCategory, setSelectedCatregory] = useState('ALL');
@@ -17,7 +14,8 @@ const Home = () => {
   const { ref, inView } = useInView();
 
   const getPostList = async (pageParam) => {
-    const posts = await axios.get('http://localhost:5001/posts?_limit=10&_page=1');
+    const posts = await axios.get('http://localhost:5001/posts');
+    console.log(posts.data);
     return posts.data;
     // process.env.REACT_APP_DB_HOST +
     // const posts = await axios.get(`http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=${pageParam}&size=12`);
@@ -41,55 +39,17 @@ const Home = () => {
   // );
 
   useEffect(() => {
-    refetch();
-  }, [selectedCategory, selectedSort]);
-
-  useEffect(() => {
     if (inView) {
       console.log('마지막!');
       // fetchNextPage();
     }
   }, [inView]);
 
-  // TODO: 리덕스 스토어에 넣기
-  const viewOptions = {
-    category: [
-      {
-        name: 'ALL',
-        text: '전체보기',
-      },
-      {
-        name: 'PURCHASE',
-        text: '공동구매',
-      },
-      {
-        name: 'DELIVERY',
-        text: '배달',
-      },
-      {
-        name: 'EXHIBITION',
-        text: '공연/전시회',
-      },
-      {
-        name: 'ETC',
-        text: '기타',
-      },
-    ],
-    sort: [
-      {
-        name: 'default',
-        text: '최신순',
-      },
-      {
-        name: 'popular',
-        text: '인기',
-      },
-      {
-        name: 'almost',
-        text: '모집중',
-      },
-    ],
-  };
+  useEffect(() => {
+    refetch();
+  }, [selectedCategory, selectedSort]);
+
+  const viewOptions = useSelector((state) => state.viewOption);
 
   const onClickCategory = async (name) => {
     setSelectedCatregory(name);
@@ -102,9 +62,6 @@ const Home = () => {
     queryClient.invalidateQueries('postList');
     // await getPostList();
   };
-
-  const regex = /(http(s))?:\/\/([a-z0-9-]+\.)+[a-z0-9]{2,4}.*$/;
-  const postCategory = useSelector((state) => state.category);
 
   return (
     <>
@@ -127,7 +84,6 @@ const Home = () => {
       </BannerSection>
 
       <CategoryAndSort>
-        {/* TODO: 정렬 및 카테고리 섹션 만들기 */}
         <CategoryBox>
           {viewOptions.category.map((c) => {
             return (
@@ -158,52 +114,15 @@ const Home = () => {
               </SortItem>
             );
           })}
-          {/* <div>최신순</div>
-          <div>인기</div>
-          <div>모집중</div> */}
         </SortBox>
       </CategoryAndSort>
 
       <PostsSection>
         <PostList>
           {/* FIXME: .data 빼기 */}
-          {posts.data.map((d) => {
+          {posts.map((postInfo) => {
             return (
-              // TODO: PostItem 컴포넌트 분리해서 MyPage에서 재사용
-              <PostItem key={d.id}>
-                <Link to={`/post/${d.id}`}>
-                  <PostTitle>
-                    <em>
-                      {postCategory[d.category][0]}&nbsp;
-                      <span>
-                        ( {d.currentNumberPeople} / {d.numberPeople} )
-                      </span>
-                    </em>
-                    <strong>{d.title}</strong>
-                    <Deadline>
-                      ~ {new Date(d.deadline).toLocaleDateString()}
-                    </Deadline>
-                  </PostTitle>
-                  {d.imageUrl && regex.test(d.imageUrl) ? (
-                    <Image src={d.imageUrl} alt="" />
-                  ) : (
-                    <Image src={postCategory[d.category][1]} alt="" />
-                  )}
-                  <PostItemFooter>
-                    <em>
-                      <TbFaceId /> {d.nickname}
-                    </em>
-                    <ViewAndCommentCount>
-                      <span>
-                        <AiOutlineEye /> {d.viewCount}
-                      </span>
-                      <span>
-                        <FaRegComment /> {d.commentCount}
-                      </span>
-                    </ViewAndCommentCount>
-                  </PostItemFooter>
-                </Link>
-              </PostItem>
+              <PostItem key={postInfo.id} postInfo={postInfo} />
             );
           })}
         </PostList>
@@ -323,87 +242,3 @@ const PostList = styled.ul`
   gap: 15px;
 `;
 
-const PostItem = styled.li`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding: 20px 15px;
-  border: 3px solid #f2f2f2;
-  border-radius: 20px;
-  transition: all 0.2s ease-in-out;
-  em {
-    display: block;
-    padding: 3px 7px;
-    border-radius: 5px;
-    background: #f1f1f1;
-    text-align: center;
-    letter-spacing: -0.1em;
-    font-style: normal;
-    font-weight: 600;
-    transition: all 0.4s ease-in-out;
-  }
-  &:hover {
-    transform: scale(102%);
-    background: #f1f1f1;
-    em {
-      background: #ddd;
-    }
-  }
-  strong {
-    overflow: hidden;
-    display: block;
-    width: 300px;
-    margin-top: 15px;
-    font-size: 1.2em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  @media only screen and (max-width: 763px) {
-    width: 100%;
-    align-items: center;
-  }
-`;
-
-const PostTitle = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-`;
-
-const Deadline = styled.p`
-  margin-top: -5px;
-  color: #222;
-  font-size: 14px;
-`;
-
-const PostItemFooter = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 300px;
-  em {
-    display: flex;
-    gap: 3px;
-    align-items: center;
-  }
-`;
-
-const ViewAndCommentCount = styled.div`
-  display: flex;
-  gap: 10px;
-  color: #a0a0a0;
-  margin-top: 5px;
-  span {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-`;
-
-const Image = styled.img`
-  width: 300px;
-  margin: 10px 0;
-  border-radius: 10px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-`;
