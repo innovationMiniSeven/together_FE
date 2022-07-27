@@ -32,11 +32,11 @@ const viewOptionSlice = createSlice({
       },
       {
         name: 'popular',
-        text: '인기',
+        text: '인기순',
       },
       {
         name: 'almost',
-        text: '모집중',
+        text: '모집임박',
       },
     ],
   },
