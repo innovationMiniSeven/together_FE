@@ -6,7 +6,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
-import { SERVER_BASE_URL } from '../constants';
 
 import { FiArrowLeft } from 'react-icons/fi';
 import { TbFaceId } from 'react-icons/tb';
@@ -45,24 +44,19 @@ const Detail = () => {
     mode: 'onChange',
   });
 
-  // params.postId 파라미터로 가져온 작성글의 id값으로 해당하는 id 값의 글 가져오기
   const getPost = async () => {
-    const res = await axios.get('http://localhost:5001/posts/' + params.postId);
-    // FIXME: const res = await axios.get(`${SERVER_BASE_URL}/post/${params.postId}`);
+    // const res = await axios.get('http://localhost:5001/posts/' + params.postId);
+    const res = await axios.get(`http://13.125.250.104/api/post/${params.postId}`);
+    console.log('게시글', res.data);
     return res.data;
   };
 
-  // 댓글의 작성글의 postId값과 댓글의 postId값을 비교해서 일치하는 값만 com_list에 담기
   const getComment = async () => {
-    const res = await axios.get('http://localhost:5001/comment');
-    // FIXME: const res = await axios.get(`${SERVER_BASE_URL}/comment/${params.postId}`);
-    let com_list = [];
-    res.data.forEach((d) => {
-      if (params.postId == d.postId) {
-        com_list.push(d);
-      }
-    });
-    return com_list;
+    // const res = await axios.get('http://localhost:5001/comment');
+    const res = await axios.get(`http://13.125.250.104/api/comment/${params.postId}`);
+    console.log(res);
+    console.log('댓글', res.data);
+    return res.data;
   };
 
   const submitComment = async (CommentData) => {
@@ -76,12 +70,10 @@ const Detail = () => {
       content: CommentData.commentContent,
       createdAt: now,
       postId: params.postId,
-      // FIXME: 닉네임은 mock API용 (추후 삭제)
-      nickname: '테스트닉네임',
     };
 
     try {
-      await axios.post('http://localhost:5001/comment', data);
+      await axios.post(`http://13.125.250.104/api/comment/${params.postId}`, data);
       queryClient.invalidateQueries('comment');
       setValue('commentContent', '');
     } catch (err) {
@@ -94,7 +86,9 @@ const Detail = () => {
     const result = confirm('게시글을 삭제 HeyYo?');
     if (result) {
       try {
-        await axios.delete('http://localhost:5001/posts/' + params.postId);
+        await axios.delete(`http://13.125.250.104/api/post/${params.postId}`);
+        // FIXME: 
+        alert('게시글을 삭제했습니다.')
         navigate('/');
       } catch (err) {
         console.log(err);
@@ -109,7 +103,7 @@ const Detail = () => {
     const result = confirm('댓글을 삭제 HeyYo?');
     if (result) {
       try {
-        await axios.delete(`http://localhost:5001/comment/${CommentId}`);
+        await axios.delete(`http://13.125.250.104/api/comment/${CommentId}`);
         queryClient.invalidateQueries('comment');
       } catch (err) {
         console.log(err);
@@ -120,8 +114,12 @@ const Detail = () => {
     }
   };
 
-  const postInfo = useQuery(['post'], getPost).data;
-  const comments = useQuery(['comment'], getComment).data;
+  const postInfo = useQuery(['post'], getPost, {
+    refetchOnWindowFocus: false,
+  }).data;
+  const comments = useQuery(['comment'], getComment, {
+    refetchOnWindowFocus: false,
+  }).data;
   // console.log(category[postInfo.category][3]);
   // FIXME: 깜빡이는 문제 해결법 (useQuery가 원인. option 객체로 전달 but 캐시 못쓴다.)
   // 방법 1) cacheTime 설정하고 사용
@@ -145,7 +143,7 @@ const Detail = () => {
             <TbFaceId />
             <div>{postInfo.nickname}</div>
             <div style={{ fontWeight: '600', color: '#717171' }}>
-              {new Date(postInfo.createdAt).toLocaleString()}
+              {postInfo.createdAt}
             </div>
             <div style={{ fontWeight: '600', color: '#717171' }}>
               {postInfo.viewCount}
@@ -172,7 +170,7 @@ const Detail = () => {
           </li>
           <li>
             <span>마감 일자</span>
-            <span>{postInfo.deadline}</span>
+            <span>{postInfo.deadline.slice(0,10)}</span>
           </li>
           <li>
             <span>연락 방법</span>
@@ -185,8 +183,14 @@ const Detail = () => {
       <ContentAndComment>
         <PostContent>
           <h2>소개</h2>
-          {/* TODO: 개행문자 줄바꿈 처리 */}
-          <div>{postInfo.content}</div>
+          <div>{postInfo.content.split("\n").map((line, idx) => {
+            return (
+              <span key={idx}>
+                {line}
+                <br />
+              </span>
+            )
+          })}</div>
           <img src={postInfo.imageUrl} alt="" />
         </PostContent>
 
@@ -216,7 +220,7 @@ const Detail = () => {
                     <div>
                       <div>
                         <div>{d.nickname}</div>
-                        <div>{d.createdAt}</div>
+                        <div>{d.createdAt.slice(0,10)}</div>
                       </div>
                       <div>
                         <CommentDelBtn onClick={() => removeComment(d.id)}>
