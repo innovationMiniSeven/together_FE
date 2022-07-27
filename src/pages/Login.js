@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { SERVER_BASE_URL } from '../constants';
 import Form from '../components/Form';
 import Button from '../components/Button';
 import { AiOutlineArrowRight } from 'react-icons/ai';
@@ -24,9 +23,10 @@ const Login = () => {
     };
 
     try {
-      const res = await axios.post(`${SERVER_BASE_URL}/login`, data);
+      const res = await axios.post('http://13.125.250.104/api/login', data, {
+        withCredentials: true,
+      });
       console.log(res);
-      // TODO: sessionStorage.setItem()
       alert('환영HeyYo :)');
       navigate('/');
     } catch (err) {
