@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { TbFaceId } from 'react-icons/tb';
 
+import axios from 'axios';
+
 const Header = () => {
+  // TODO: 최초 1번 닉네임 받아와서 state 저장하기
+  const [nickname, setNickname] = useState('');
+
+  useEffect(() => {
+    const getNickname = async () => {
+      const res = await axios.get('http://13.125.250.104/api/auth');
+      console.log(res);
+      setNickname(res.data.nickname);
+    };
+    getNickname();
+  }, []);
+
+  const handleLogout = async () => {
+    const res = await axios.post('http://13.125.250.104/api/logout');
+    console.log('로그아웃', res);
+    // TODO: 성공 시 redux nickname state 비우기 '' -> Falsy
+  };
   return (
     <HeaderComponent>
       <Link to="/">
@@ -13,8 +32,10 @@ const Header = () => {
         </h1>
       </Link>
       <Navbar>
+        <UserInfo>{nickname}님 환영합니다</UserInfo>
         <Link to="/post">게시글작성</Link>
         <Link to="/mypage">마이페이지</Link>
+        <button onClick={handleLogout}>로그아웃</button>
         <Link to="/login">로그인</Link>
       </Navbar>
     </HeaderComponent>
@@ -54,6 +75,7 @@ const HeaderComponent = styled.header`
 
 const Navbar = styled.nav`
   display: flex;
+  align-items: center;
   gap: 15px;
   a {
     padding: 5px 10px;
@@ -66,4 +88,8 @@ const Navbar = styled.nav`
       font-weight: 700;
     }
   }
+`;
+
+const UserInfo = styled.span`
+  font-weight: 500;
 `;
