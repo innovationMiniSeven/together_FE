@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Form from '../components/Form';
 import Button from '../components/Button';
 import { AiOutlineArrowRight } from 'react-icons/ai';
+import instance from '../shared/Request';
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,10 +24,11 @@ const Login = () => {
     };
 
     try {
-      const res = await axios.post('http://13.125.250.104/api/login', data, {
+      const res = await instance.post('http://13.125.250.104/api/login', data, {
+      // const res = await axios.post('http://localhost:5001/user', data, {
         withCredentials: true,
       });
-      console.log(res);
+      localStorage.setItem('TOKEN', res.data);
       alert('환영HeyYo :)');
       navigate('/');
     } catch (err) {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { storage } from '../shared/firebase';
@@ -8,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import Button from '../components/Button';
 import { MdAddPhotoAlternate } from 'react-icons/md';
+import instance from '../shared/Request';
 
 const Post = () => {
   const postId = useParams()?.postId;
@@ -25,13 +25,14 @@ const Post = () => {
   });
 
   useEffect(() => {
+    // TODO: 로그인 상태 아니면 리다이렉트('/login')
     if (postId) {
       const setPost = async () => {
         // const postInfo = await axios.get(
         //   `http://localhost:5001/posts/${postId}`,
         // );
         // FIXME:
-        const postInfo = await axios.get(`http://13.125.250.104/api/post/${postId}`);
+        const postInfo = await instance.get(`http://13.125.250.104/api/post/${postId}`);
 
         const data = postInfo.data;
         console.log(data);
@@ -93,7 +94,7 @@ const Post = () => {
       try {
         // const res = await axios.post('http://localhost:5001/posts', newPost);
         // FIXME:
-        const res = await axios.post('http://13.125.250.104/api/post', newPost);
+        const res = await instance.post('http://13.125.250.104/api/post', newPost);
         console.log(res);
         alert('게시글이 등록되었습니다!');
         navigate('/');
@@ -107,7 +108,7 @@ const Post = () => {
         //   newPost,
         // );
         // FIXME:
-        const res = await axios.put(`http://13.125.250.104/api/post/${postId}`, newPost);
+        const res = await instance.put(`http://13.125.250.104/api/post/${postId}`, newPost);
         console.log(res);
         alert('게시글이 수정되었습니다!');
         navigate(`/post/${postId}`);

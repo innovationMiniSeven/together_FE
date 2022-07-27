@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link, useParams, useNavigate } from 'react-router-dom';
@@ -16,6 +15,7 @@ import {
   MdEmojiPeople,
 } from 'react-icons/md';
 import { FaPeopleCarry } from 'react-icons/fa';
+import instance from '../shared/Request';
 
 const CategoryIcon = ({ category }) => {
   CategoryIcon.propTypes = {
@@ -45,15 +45,15 @@ const Detail = () => {
   });
 
   const getPost = async () => {
-    const res = await axios.get('http://localhost:5001/posts/' + params.postId);
-    // const res = await axios.get(`http://13.125.250.104/api/post/${params.postId}`);
+    // const res = await axios.get('http://localhost:5001/posts/' + params.postId);
+    const res = await instance.get(`http://13.125.250.104/api/post/${params.postId}`);
     console.log('게시글', res.data);
     return res.data;
   };
 
   const getComment = async () => {
-    const res = await axios.get('http://localhost:5001/comment');
-    // const res = await axios.get(`http://13.125.250.104/api/comment/${params.postId}`);
+    // const res = await axios.get('http://localhost:5001/comment');
+    const res = await instance.get(`http://13.125.250.104/api/comment/${params.postId}`);
     console.log(res);
     console.log('댓글', res.data);
     return res.data;
@@ -73,7 +73,7 @@ const Detail = () => {
     };
 
     try {
-      await axios.post(
+      await instance.post(
         `http://13.125.250.104/api/comment/${params.postId}`,
         data,
       );
@@ -89,7 +89,7 @@ const Detail = () => {
     const result = confirm('게시글을 삭제 HeyYo?');
     if (result) {
       try {
-        await axios.delete(`http://13.125.250.104/api/post/${params.postId}`);
+        await instance.delete(`http://13.125.250.104/api/post/${params.postId}`);
         // FIXME:
         alert('게시글을 삭제했습니다.');
         navigate('/');
@@ -106,7 +106,7 @@ const Detail = () => {
     const result = confirm('댓글을 삭제 HeyYo?');
     if (result) {
       try {
-        await axios.delete(`http://13.125.250.104/api/comment/${CommentId}`);
+        await instance.delete(`http://13.125.250.104/api/comment/${CommentId}`);
         queryClient.invalidateQueries('comment');
       } catch (err) {
         console.log(err);

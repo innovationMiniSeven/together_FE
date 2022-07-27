@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Form from '../components/Form';
 import Button from '../components/Button';
 import { AiOutlineArrowRight } from 'react-icons/ai';
+import instance from '../shared/Request';
 
 const Join = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Join = () => {
     console.log(data);
 
     try {
-      const res = await axios.post('http://13.125.250.104/api/signup', data);
+      const res = await instance.post('http://13.125.250.104/api/signup', data);
       console.log(res);
       alert('HeyYo 회원가입 완료! 로그인 페이지로 이동합니다 :)');
       navigate('/login');

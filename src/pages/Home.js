@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styled, { css } from 'styled-components';
 import { useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import Loading from '../components/Loading';
 import PostItem from '../components/PostItem';
 import { useSelector } from 'react-redux';
+import instance from '../shared/Request';
 
 const Home = () => {
   const [selectedCategory, setSelectedCatregory] = useState('ALL');
@@ -14,13 +14,13 @@ const Home = () => {
   const { ref, inView } = useInView();
 
   const getPostList = async (pageParam) => {
-    const posts = await axios.get('http://localhost:5001/posts');
-    console.log(posts.data);
-    return posts.data;
+    // const posts = await axios.get('http://localhost:5001/posts');
+    // console.log(posts.data);
+    // return posts.data;
     // process.env.REACT_APP_DB_HOST +
-    // const posts = await axios.get(`http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=${pageParam}&size=12`);
+    const posts = await instance.get(`http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=0&size=12`);
     // TODO: 무한 스크롤 구현 (useInfiniteQuery)
-    // return posts.data.content;
+    return posts.data.content;
     // FIXME: return 값에 객체 안에 data랑 last랑 nextPage: pageParam + 1 담아 보내기 => getNextPageParam에서 매개변수로 받아서 사용
   };
 

@@ -3,17 +3,18 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import PostItem from '../components/PostItem';
+import instance from '../shared/Request';
 
 const Mypage = () => {
   const getMyPostList = async () => {
-    const posts = await axios.get(
-      'http://localhost:5001/posts?_limit=10&_page=1',
-    );
-    return posts.data;
+    // const posts = await instance.get(
+    //   'http://localhost:5001/posts?_limit=10&_page=1',
+    // );
+    // return posts.data;
     // process.env.REACT_APP_DB_HOST +
-    // const posts = await axios.get(`http://13.125.250.104/api/mypost`);
-    // console.log(posts);
-    // return posts.data.content;
+    const posts = await instance.get(`http://13.125.250.104/api/mypost`);
+    console.log(posts);
+    return posts.data;
   };
 
   const { data: posts } = useQuery(['postList'], getMyPostList, {
