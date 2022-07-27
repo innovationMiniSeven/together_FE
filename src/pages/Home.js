@@ -1,42 +1,55 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled, { css } from 'styled-components';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { TbFaceId } from 'react-icons/tb';
 import { AiOutlineEye } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
+import Loading from '../components/Loading';
 
 const Home = () => {
   const [selectedCategory, setSelectedCatregory] = useState('ALL');
   const [selectedSort, setSelectedSort] = useState('default');
   const queryClient = useQueryClient();
+  const { ref, inView } = useInView();
 
-  const getPostList = async () => {
-    // const posts = await axios.get('http://localhost:5001/posts');
-    // return posts.data;
-    // FIXME:
-    // TODO:
+  const getPostList = async (pageParam) => {
+    const posts = await axios.get('http://localhost:5001/posts?_limit=10&_page=1');
+    return posts.data;
     // process.env.REACT_APP_DB_HOST +
-    const posts = await axios.get(`http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=0&size=12`);
-    // const posts = await axios.get('/api/mypost');
-    // console.log(posts);
-    // `/api/posts?sort=default&category=ALL&page=0&size=12`,
-    // );
-    // return posts.data;
-    return posts.data.content;
+    // const posts = await axios.get(`http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=${pageParam}&size=12`);
     // TODO: 무한 스크롤 구현 (useInfiniteQuery)
+    // return posts.data.content;
+    // FIXME: return 값에 객체 안에 data랑 last랑 nextPage: pageParam + 1 담아 보내기 => getNextPageParam에서 매개변수로 받아서 사용
   };
 
-  const { data, refetch } = useQuery(['postList'], getPostList, {
+  const { data: posts, refetch } = useQuery(['postList'], getPostList, {
     refetchOnWindowFocus: false,
   });
   // console.log(data);
 
+  // const { data, status, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
+  //   "posts",
+  //   ({ pageParam = 0 }) => getPostList(pageParam),
+  //   {
+  //     getNextPageParam: (lastPage) =>
+  //       !lastPage.isLast ? lastPage.nextPage : undefined,
+  //   }
+  // );
+
   useEffect(() => {
     refetch();
   }, [selectedCategory, selectedSort]);
+
+  useEffect(() => {
+    if (inView) {
+      console.log('마지막!');
+      // fetchNextPage();
+    }
+  }, [inView]);
 
   // TODO: 리덕스 스토어에 넣기
   const viewOptions = {
@@ -153,7 +166,8 @@ const Home = () => {
 
       <PostsSection>
         <PostList>
-          {data.map((d) => {
+          {/* FIXME: .data 빼기 */}
+          {posts.data.map((d) => {
             return (
               // TODO: PostItem 컴포넌트 분리해서 MyPage에서 재사용
               <PostItem key={d.id}>
@@ -194,6 +208,7 @@ const Home = () => {
           })}
         </PostList>
       </PostsSection>
+      {/* {isFetchingNextPage? <Loading /> : <div ref={ref} />} */}
     </>
   );
 };
