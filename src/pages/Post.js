@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { storage } from '../shared/firebase';
 import { uploadBytes, ref, getDownloadURL } from 'firebase/storage';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import Button from '../components/Button';
@@ -10,6 +11,7 @@ import { MdAddPhotoAlternate } from 'react-icons/md';
 import instance from '../shared/Request';
 
 const Post = () => {
+  const nickname = useSelector((state) => state.user.nickname);
   const postId = useParams()?.postId;
   const navigate = useNavigate();
   const [imgSrc, setImgSrc] = useState('');
@@ -25,14 +27,17 @@ const Post = () => {
   });
 
   useEffect(() => {
-    // TODO: 로그인 상태 아니면 리다이렉트('/login')
     if (postId) {
       const setPost = async () => {
-        // const postInfo = await axios.get(
-        //   `http://localhost:5001/posts/${postId}`,
-        // );
-        // FIXME:
-        const postInfo = await instance.get(`http://13.125.250.104/api/post/${postId}`);
+        const postInfo = await instance.get(
+          `http://13.125.250.104/api/post/${postId}`,
+        );
+
+        if (postInfo.data.nickname !== nickname) {
+          alert('수정 권한이 없습니다.');
+          navigate(-1);
+          return;
+        }
 
         const data = postInfo.data;
         console.log(data);
@@ -88,13 +93,13 @@ const Post = () => {
       imageUrl,
     };
     console.log('새 게시글', newPost);
-  
 
     if (!postId) {
       try {
-        // const res = await axios.post('http://localhost:5001/posts', newPost);
-        // FIXME:
-        const res = await instance.post('http://13.125.250.104/api/post', newPost);
+        const res = await instance.post(
+          'http://13.125.250.104/api/post',
+          newPost,
+        );
         console.log(res);
         alert('게시글이 등록되었습니다!');
         navigate('/');
@@ -103,12 +108,10 @@ const Post = () => {
       }
     } else {
       try {
-        // const res = await axios.put(
-        //   `/api/posts/${postId}`,
-        //   newPost,
-        // );
-        // FIXME:
-        const res = await instance.put(`http://13.125.250.104/api/post/${postId}`, newPost);
+        const res = await instance.put(
+          `http://13.125.250.104/api/post/${postId}`,
+          newPost,
+        );
         console.log(res);
         alert('게시글이 수정되었습니다!');
         navigate(`/post/${postId}`);
