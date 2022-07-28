@@ -39,41 +39,33 @@ const Detail = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const category = useSelector((state) => state.category);
+  const { nickname, isLoggedIn } = useSelector((state) => state.user);
 
   const { register, handleSubmit, setValue } = useForm({
     mode: 'onChange',
   });
 
   const getPost = async () => {
-    // const res = await axios.get('http://localhost:5001/posts/' + params.postId);
-    const res = await instance.get(`http://13.125.250.104/api/post/${params.postId}`);
-    console.log('게시글', res.data);
+    const res = await instance.get(
+      `http://13.125.250.104/api/post/${params.postId}`,
+    );
     return res.data;
   };
 
   const getComment = async () => {
-    // const res = await axios.get('http://localhost:5001/comment');
-    const res = await instance.get(`http://13.125.250.104/api/comment/${params.postId}`);
-    console.log(res);
-    console.log('댓글', res.data);
+    const res = await instance.get(
+      `http://13.125.250.104/api/comment/${params.postId}`,
+    );
     return res.data;
   };
 
   const submitComment = async (CommentData) => {
-    let today = new Date();
-    let year = today.getFullYear(); // 년도
-    let month = today.getMonth() + 1; // 월
-    let date = today.getDate(); // 날짜
-    let now = year + '.' + month + '.' + date;
-
     const data = {
       content: CommentData.commentContent,
-      createdAt: now,
-      postId: params.postId,
     };
 
     try {
-      await instance.post(
+      const res = await instance.post(
         `http://13.125.250.104/api/comment/${params.postId}`,
         data,
       );
@@ -89,13 +81,14 @@ const Detail = () => {
     const result = confirm('게시글을 삭제 HeyYo?');
     if (result) {
       try {
-        await instance.delete(`http://13.125.250.104/api/post/${params.postId}`);
-        // FIXME:
+        await instance.delete(
+          `http://13.125.250.104/api/post/${params.postId}`,
+        );
         alert('게시글을 삭제했습니다.');
         navigate('/');
       } catch (err) {
         console.log(err);
-        alert('게시글을 삭제하지 못했습니다.');
+        alert('게시글을 삭제하지 못했습니다. ' + err.response.data.message);
       }
     } else {
       return;
@@ -108,9 +101,10 @@ const Detail = () => {
       try {
         await instance.delete(`http://13.125.250.104/api/comment/${CommentId}`);
         queryClient.invalidateQueries('comment');
+        alert('댓글을 삭제했습니다.');
       } catch (err) {
         console.log(err);
-        alert('댓글을 삭제하지 못했습니다.');
+        alert('댓글을 삭제하지 못했습니다. ' + err.response.data.message);
       }
     } else {
       return;
@@ -120,6 +114,7 @@ const Detail = () => {
   const postInfo = useQuery(['post'], getPost, {
     refetchOnWindowFocus: false,
   }).data;
+
   const comments = useQuery(['comment'], getComment, {
     refetchOnWindowFocus: false,
   }).data;
@@ -152,12 +147,14 @@ const Detail = () => {
               {postInfo.viewCount}
             </div>
           </User>
-          <EditAndDelete>
-            <Link to={`/post/${params.postId}/edit`}>
-              <RiEdit2Line />
-            </Link>
-            <RiDeleteBin5Line onClick={removePost} />
-          </EditAndDelete>
+          {postInfo.nickname === nickname && (
+            <EditAndDelete>
+              <Link to={`/post/${params.postId}/edit`}>
+                <RiEdit2Line />
+              </Link>
+              <RiDeleteBin5Line onClick={removePost} />
+            </EditAndDelete>
+          )}
         </UserAndDate>
 
         <PostInfo>
@@ -178,7 +175,6 @@ const Detail = () => {
           <li>
             <span className="subcategory">연락 방법</span>
             <span>{postInfo.contactMethod}</span>
-            {/* FIXME: 긴 텍스트 CSS 수정 필요 */}
           </li>
         </PostInfo>
       </section>
@@ -188,12 +184,7 @@ const Detail = () => {
           <h2>소개</h2>
           <div>
             {postInfo.content.split('\n').map((line, idx) => {
-              return (
-                <>
-                  <p key={idx}>{line}</p>
-                  <br />
-                </>
-              );
+              return <p key={idx}>{line}</p>;
             })}
           </div>
           <img src={postInfo.imageUrl} alt="" />
@@ -228,9 +219,11 @@ const Detail = () => {
                         <div>{d.createdAt.slice(0, 10)}</div>
                       </div>
                       <div>
-                        <CommentDelBtn onClick={() => removeComment(d.id)}>
-                          삭제
-                        </CommentDelBtn>
+                        {isLoggedIn && nickname === d.nickname && (
+                          <CommentDelBtn onClick={() => removeComment(d.id)}>
+                            삭제
+                          </CommentDelBtn>
+                        )}
                       </div>
                     </div>
                   </CommentUser>
@@ -360,6 +353,7 @@ const PostContent = styled.div`
   div {
     width: 100%;
     margin: 20px auto 0;
+    line-height: 1.4;
   }
   img {
     display: block;
