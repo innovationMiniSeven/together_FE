@@ -8,12 +8,22 @@ import { TbFaceId } from 'react-icons/tb';
 import { AiOutlineEye } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 
-const PostItem = ({ postInfo }) => {
+const PostItem = ({ postInfo, now }) => {
   const regex = /(http(s))?:\/\/([a-z0-9-]+\.)+[a-z0-9]{2,4}.*$/;
   const postCategory = useSelector((state) => state.category);
 
+  const getIsExpired = () => {
+    let postDeadline = new Date(postInfo.deadline);
+    postDeadline.setHours(0);
+    postDeadline.setMinutes(0);
+    postDeadline.setSeconds(0);
+    postDeadline = postDeadline.setHours(postDeadline.getHours() + 24);
+    console.log(postDeadline, now, postDeadline < now);
+    return postDeadline < now;
+  };
+
   return (
-    <PostItemContainer key={postInfo.id}>
+    <PostItemContainer key={postInfo.id} expired={getIsExpired()}>
       <Link to={`/post/${postInfo.id}`}>
         <PostTitle>
           <em>
@@ -23,9 +33,9 @@ const PostItem = ({ postInfo }) => {
             </span>
           </em>
           <strong>{postInfo.title}</strong>
-          <Deadline>
+          <p className="deadline">
             ~ {new Date(postInfo.deadline).toLocaleDateString()}
-          </Deadline>
+          </p>
         </PostTitle>
         {postInfo.imageUrl && regex.test(postInfo.imageUrl) ? (
           <Image src={postInfo.imageUrl} alt="" />
@@ -54,6 +64,7 @@ export default PostItem;
 
 PostItem.propTypes = {
   postInfo: PropTypes.object.isRequired,
+  now: PropTypes.number,
 };
 
 const PostItemContainer = styled.li`
@@ -64,6 +75,7 @@ const PostItemContainer = styled.li`
   border: 3px solid #f2f2f2;
   border-radius: 20px;
   transition: all 0.2s ease-in-out;
+  background: ${({ expired }) => (expired ? '#f1f1f1' : '#fff')};
   em {
     display: block;
     padding: 3px 7px;
@@ -90,6 +102,13 @@ const PostItemContainer = styled.li`
     font-size: 1.2em;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-decoration: ${({ expired }) => (expired ? 'line-through' : 'none')};
+  }
+  p.deadline {
+    margin-top: -5px;
+    color: ${({ expired }) => (expired ? '#e5990d' : '#555')};
+    font-size: 14px;
+    font-weight: 600;
   }
   @media only screen and (max-width: 763px) {
     width: 100%;
@@ -101,12 +120,6 @@ const PostTitle = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
-`;
-
-const Deadline = styled.p`
-  margin-top: -5px;
-  color: #222;
-  font-size: 14px;
 `;
 
 const PostItemFooter = styled.div`

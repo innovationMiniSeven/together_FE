@@ -12,6 +12,7 @@ const Home = () => {
   const [selectedSort, setSelectedSort] = useState('default');
   const queryClient = useQueryClient();
   const { ref, inView } = useInView();
+  const [nowDate, setNowDate] = useState();
 
   const getPostList = async (pageParam = 0) => {
     const posts = await instance.get(
@@ -30,6 +31,10 @@ const Home = () => {
         !lastPage.last ? lastPage.nextPage : undefined,
     },
   );
+
+  useEffect(() => {
+    setNowDate(Date.now());
+  }, []);
 
   useEffect(() => {
     if (inView) {
@@ -112,7 +117,7 @@ const Home = () => {
           {data?.pages.map((page, index) => (
             <React.Fragment key={index}>
               {page.data.map((post) => (
-                <PostItem key={post.id} postInfo={post} />
+                <PostItem key={post.id} postInfo={post} now={nowDate} />
               ))}
             </React.Fragment>
           ))}
