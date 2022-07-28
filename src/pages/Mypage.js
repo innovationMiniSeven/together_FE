@@ -1,23 +1,16 @@
 import React from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
-import PostItem from '../components/PostItem';
 import instance from '../shared/Request';
+import PostItem from '../components/PostItem';
 
 const Mypage = () => {
   const getMyPostList = async () => {
-    // const posts = await instance.get(
-    //   'http://localhost:5001/posts?_limit=10&_page=1',
-    // );
-    // return posts.data;
-    // process.env.REACT_APP_DB_HOST +
-    const posts = await instance.get(`http://13.125.250.104/api/mypost`);
-    console.log(posts);
+    const posts = await instance.get('/api/mypost');
     return posts.data;
   };
 
-  const { data: posts } = useQuery(['postList'], getMyPostList, {
+  const posts = useQuery(['myPostList'], getMyPostList, {
     refetchOnWindowFocus: false,
   });
 
@@ -26,7 +19,7 @@ const Mypage = () => {
       <h2>내 작성글</h2>
       <PostsSection>
         <PostList>
-          {posts.map((postInfo) => {
+          {posts.data.map((postInfo) => {
             return <PostItem key={postInfo.id} postInfo={postInfo} />;
           })}
         </PostList>
