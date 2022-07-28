@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { TbFaceId } from 'react-icons/tb';
@@ -10,17 +10,13 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { nickname, isLoggedIn } = useSelector((state) => state.user);
-  // TODO: 최초 1번 닉네임 받아와서 state 저장하기 or react-query
 
   useEffect(() => {
     const hasToken = localStorage.getItem('TOKEN');
     const setUserState = async () => {
       dispatch(toggleLoggedIn(true));
-      // FIXME: setNickname 수정
-      // const res = await instance.get('http://13.125.250.104/api/auth');
-      // console.log(res);
-      // dispatch(setNickname(res.data.nickname));
-      dispatch(setNickname('갈비천왕'));
+      const res = await instance.get('/api/auth');
+      dispatch(setNickname(res.data.nickname));
     };
     if (hasToken) {
       setUserState();
@@ -28,7 +24,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    const res = await instance.post('http://13.125.250.104/api/logout');
+    const res = await instance.post('/api/logout');
     console.log('로그아웃', res);
     dispatch(toggleLoggedIn(false));
     dispatch(setNickname(''));
