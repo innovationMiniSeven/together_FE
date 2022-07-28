@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import Loading from '../components/Loading';
 import PostItem from '../components/PostItem';
@@ -13,40 +13,33 @@ const Home = () => {
   const queryClient = useQueryClient();
   const { ref, inView } = useInView();
 
-  const getPostList = async (pageParam) => {
-    // const posts = await axios.get('http://localhost:5001/posts');
-    // console.log(posts.data);
-    // return posts.data;
-    // process.env.REACT_APP_DB_HOST +
-    const posts = await instance.get(`http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=0&size=12`);
-    // TODO: 무한 스크롤 구현 (useInfiniteQuery)
-    return posts.data.content;
-    // FIXME: return 값에 객체 안에 data랑 last랑 nextPage: pageParam + 1 담아 보내기 => getNextPageParam에서 매개변수로 받아서 사용
+  const getPostList = async (pageParam = 0) => {
+    const posts = await instance.get(
+      `http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=${pageParam}&size=6`,
+    );
+    const data = posts.data.content;
+    const last = posts.data.last;
+    return { data, last, nextPage: pageParam + 1 };
   };
 
-  const { data: posts, refetch } = useQuery(['postList'], getPostList, {
-    refetchOnWindowFocus: false,
-  });
-  // console.log(data);
-
-  // const { data, status, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-  //   "posts",
-  //   ({ pageParam = 0 }) => getPostList(pageParam),
-  //   {
-  //     getNextPageParam: (lastPage) =>
-  //       !lastPage.isLast ? lastPage.nextPage : undefined,
-  //   }
-  // );
+  const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
+    ['postList'],
+    ({ pageParam = 0 }) => getPostList(pageParam),
+    {
+      getNextPageParam: (lastPage) =>
+        !lastPage.last ? lastPage.nextPage : undefined,
+    },
+  );
 
   useEffect(() => {
     if (inView) {
-      console.log('마지막!');
-      // fetchNextPage();
+      fetchNextPage();
     }
   }, [inView]);
 
   useEffect(() => {
     refetch();
+    queryClient.invalidateQueries('postList');
   }, [selectedCategory, selectedSort]);
 
   const viewOptions = useSelector((state) => state.viewOption);
@@ -54,13 +47,11 @@ const Home = () => {
   const onClickCategory = async (name) => {
     setSelectedCatregory(name);
     queryClient.invalidateQueries('postList');
-    // await getPostList();
   };
 
   const onClickSort = async (name) => {
     setSelectedSort(name);
     queryClient.invalidateQueries('postList');
-    // await getPostList();
   };
 
   return (
@@ -88,7 +79,6 @@ const Home = () => {
           {viewOptions.category.map((c) => {
             return (
               <CategoryItem
-                // category={c.name}
                 key={c.name}
                 active={c.name === selectedCategory}
                 onClick={() => {
@@ -119,15 +109,16 @@ const Home = () => {
 
       <PostsSection>
         <PostList>
-          {/* FIXME: .data 빼기 */}
-          {posts.map((postInfo) => {
-            return (
-              <PostItem key={postInfo.id} postInfo={postInfo} />
-            );
-          })}
+          {data?.pages.map((page, index) => (
+            <React.Fragment key={index}>
+              {page.data.map((post) => (
+                <PostItem key={post.id} postInfo={post} />
+              ))}
+            </React.Fragment>
+          ))}
         </PostList>
       </PostsSection>
-      {/* {isFetchingNextPage? <Loading /> : <div ref={ref} />} */}
+      {isFetchingNextPage ? <Loading /> : <div ref={ref} />}
     </>
   );
 };
@@ -241,4 +232,3 @@ const PostList = styled.ul`
   flex-wrap: wrap;
   gap: 15px;
 `;
-
