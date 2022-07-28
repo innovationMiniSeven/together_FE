@@ -47,14 +47,14 @@ const Detail = () => {
 
   const getPost = async () => {
     const res = await instance.get(
-      `http://13.125.250.104/api/post/${params.postId}`,
+      `/api/post/${params.postId}`,
     );
     return res.data;
   };
 
   const getComment = async () => {
     const res = await instance.get(
-      `http://13.125.250.104/api/comment/${params.postId}`,
+      `/api/comment/${params.postId}`,
     );
     return res.data;
   };
@@ -66,7 +66,7 @@ const Detail = () => {
 
     try {
       const res = await instance.post(
-        `http://13.125.250.104/api/comment/${params.postId}`,
+        `/api/comment/${params.postId}`,
         data,
       );
       queryClient.invalidateQueries('comment');
@@ -82,7 +82,7 @@ const Detail = () => {
     if (result) {
       try {
         await instance.delete(
-          `http://13.125.250.104/api/post/${params.postId}`,
+          `/api/post/${params.postId}`,
         );
         alert('게시글을 삭제했습니다.');
         navigate('/');
@@ -99,7 +99,7 @@ const Detail = () => {
     const result = confirm('댓글을 삭제 HeyYo?');
     if (result) {
       try {
-        await instance.delete(`http://13.125.250.104/api/comment/${CommentId}`);
+        await instance.delete(`/api/comment/${CommentId}`);
         queryClient.invalidateQueries('comment');
         alert('댓글을 삭제했습니다.');
       } catch (err) {
@@ -118,11 +118,6 @@ const Detail = () => {
   const comments = useQuery(['comment'], getComment, {
     refetchOnWindowFocus: false,
   }).data;
-  // console.log(category[postInfo.category][3]);
-  // FIXME: 깜빡이는 문제 해결법 (useQuery가 원인. option 객체로 전달 but 캐시 못쓴다.)
-  // 방법 1) cacheTime 설정하고 사용
-  // 방법 2) staleTime 0으로 하면 같은 쿼리키로 받아온 이전 데이터를 사용하지 X (다음 fetching 전까지)
-  // isPreviousData가 아닌 경우만 렌더링되도록 분기하기 등등...
 
   return (
     <MainContainer>

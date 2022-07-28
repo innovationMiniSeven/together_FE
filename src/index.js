@@ -18,14 +18,14 @@ const queryClient = new QueryClient({
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    <Suspense fallback={<Loading />}>
+  <Suspense fallback={<Loading />}>
+    <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={true} />
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </QueryClientProvider>
-    </Suspense>
-  </Provider>,
+    </Provider>
+  </Suspense>,
 );

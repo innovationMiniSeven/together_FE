@@ -16,7 +16,7 @@ const Home = () => {
 
   const getPostList = async (pageParam = 0) => {
     const posts = await instance.get(
-      `http://13.125.250.104/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=${pageParam}&size=6`,
+      `/api/posts?sort=${selectedSort}&category=${selectedCategory}&page=${pageParam}&size=6`,
     );
     const data = posts.data.content;
     const last = posts.data.last;
@@ -114,7 +114,7 @@ const Home = () => {
 
       <PostsSection>
         <PostList>
-          {data?.pages.map((page, index) => (
+          {data && data?.pages.map((page, index) => (
             <React.Fragment key={index}>
               {page.data.map((post) => (
                 <PostItem key={post.id} postInfo={post} now={nowDate} />

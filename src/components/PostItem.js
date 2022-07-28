@@ -18,7 +18,6 @@ const PostItem = ({ postInfo, now }) => {
     postDeadline.setMinutes(0);
     postDeadline.setSeconds(0);
     postDeadline = postDeadline.setHours(postDeadline.getHours() + 24);
-    console.log(postDeadline, now, postDeadline < now);
     return postDeadline < now;
   };
 
