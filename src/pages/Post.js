@@ -29,9 +29,7 @@ const Post = () => {
   useEffect(() => {
     if (postId) {
       const setPost = async () => {
-        const postInfo = await instance.get(
-          `http://13.125.250.104/api/post/${postId}`,
-        );
+        const postInfo = await instance.get(`/api/post/${postId}`);
 
         if (postInfo.data.nickname !== nickname) {
           alert('수정 권한이 없습니다.');
@@ -69,6 +67,14 @@ const Post = () => {
   };
 
   const onSubmitPost = async (formData) => {
+    if (
+      parseInt(formData.currentNumberPeople) > parseInt(formData.numberPeople)
+    ) {
+      alert('현재인원이 모집인원보다 많을 수 없습니다.');
+      setFocus('currentNumberPeople');
+      return;
+    }
+
     let imageUrl;
     if (formData.postImg.length > 0) {
       const uploadedFile = await uploadBytes(
@@ -96,10 +102,7 @@ const Post = () => {
 
     if (!postId) {
       try {
-        const res = await instance.post(
-          'http://13.125.250.104/api/post',
-          newPost,
-        );
+        const res = await instance.post('/api/post', newPost);
         console.log(res);
         alert('게시글이 등록되었습니다!');
         navigate('/');
@@ -108,10 +111,7 @@ const Post = () => {
       }
     } else {
       try {
-        const res = await instance.put(
-          `http://13.125.250.104/api/post/${postId}`,
-          newPost,
-        );
+        const res = await instance.put(`/api/post/${postId}`, newPost);
         console.log(res);
         alert('게시글이 수정되었습니다!');
         navigate(`/post/${postId}`);
@@ -143,18 +143,34 @@ const Post = () => {
         <Row>
           <Col>
             <label htmlFor="category">모집 분야*</label>
-            <select
-              name="category"
-              id="category"
-              {...register('category', {
-                required: true,
-              })}
-            >
-              <option value="PURCHASE">공동구매</option>
-              <option value="DELIVERY">배달</option>
-              <option value="EXHIBITION">공연/전시회</option>
-              <option value="ETC">기타</option>
-            </select>
+            {postId ? (
+              <select
+                name="category"
+                id="category"
+                disabled
+                {...register('category', {
+                  required: true,
+                })}
+              >
+                <option value="PURCHASE">공동구매</option>
+                <option value="DELIVERY">배달</option>
+                <option value="EXHIBITION">공연/전시회</option>
+                <option value="ETC">기타</option>
+              </select>
+            ) : (
+              <select
+                name="category"
+                id="category"
+                {...register('category', {
+                  required: true,
+                })}
+              >
+                <option value="PURCHASE">공동구매</option>
+                <option value="DELIVERY">배달</option>
+                <option value="EXHIBITION">공연/전시회</option>
+                <option value="ETC">기타</option>
+              </select>
+            )}
           </Col>
           <Col className="post-people">
             <label>모집 인원*</label>
@@ -183,6 +199,7 @@ const Post = () => {
             <label>마감 기한*</label>
             <input
               type="date"
+              min={new Date().toISOString().split('T')[0]}
               {...register('deadline', {
                 required: true,
               })}
@@ -298,6 +315,9 @@ const Row = styled.ul`
 const Col = styled.li`
   flex: 1;
   min-width: 250px;
+  select:disabled {
+    cursor: default;
+  }
   &.post-people {
     display: flex;
     flex-direction: column;
