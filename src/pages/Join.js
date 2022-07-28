@@ -1,5 +1,4 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,6 +17,15 @@ const Join = () => {
     formState: { isValid, errors },
   } = useForm({ mode: 'onChange' });
 
+  useEffect(() => {
+    const hasToken = localStorage.getItem('TOKEN');
+    if (hasToken) {
+      alert('이미 로그인 중입니다.');
+      navigate('/');
+      return;
+    }
+  }, []);
+
   const onSubmitJoin = async (formData) => {
     const data = {
       username: formData.username,
@@ -28,7 +36,7 @@ const Join = () => {
     console.log(data);
 
     try {
-      const res = await instance.post('http://13.125.250.104/api/signup', data);
+      const res = await instance.post('/api/signup', data);
       console.log(res);
       alert('HeyYo 회원가입 완료! 로그인 페이지로 이동합니다 :)');
       navigate('/login');

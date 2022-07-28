@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
@@ -20,6 +20,15 @@ const Login = () => {
     formState: { isValid },
   } = useForm({ mode: 'onChange' });
 
+  useEffect(() => {
+    const hasToken = localStorage.getItem('TOKEN');
+    if (hasToken) {
+      alert('이미 로그인 중입니다.');
+      navigate('/');
+      return;
+    }
+  }, []);
+
   const onSubmitLogin = async (formData) => {
     const data = {
       username: formData.username,
@@ -27,21 +36,17 @@ const Login = () => {
     };
 
     try {
-      const res = await instance.post('http://13.125.250.104/api/login', data, {
-        // const res = await axios.post('http://localhost:5001/user', data, {
+      const res = await instance.post('/api/login', data, {
         withCredentials: true,
       });
       localStorage.setItem('TOKEN', res.data);
       dispatch(toggleLoggedIn(true));
-      // FIXME: setNickname 수정할 것
-      dispatch(setNickname('갈비천왕'));
-      // const auth = await axios.get('http://13.125.250.104/api/auth', {
-      //   headers: {
-      //     Authorization: res.data,
-      //   },
-      // });
-      // console.log(auth);
-      // dispatch(setNickname(auth.data.nickname));
+      const auth = await axios.get('http://13.125.250.104/api/auth', {
+        headers: {
+          Authorization: res.data,
+        },
+      });
+      dispatch(setNickname(auth.data.nickname));
       alert('환영HeyYo :)');
       navigate('/');
     } catch (err) {
