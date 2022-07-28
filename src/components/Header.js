@@ -3,31 +3,40 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { TbFaceId } from 'react-icons/tb';
 import instance from '../shared/Request';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleLoggedIn, setNickname } from '../redux/modules/userSlice';
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { nickname, isLoggedIn } = useSelector((state) => state.user);
   // TODO: 최초 1번 닉네임 받아와서 state 저장하기 or react-query
-  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
-    const getNickname = async () => {
-      const res = await instance.get('http://13.125.250.104/api/auth');
-      console.log(res);
-      setNickname(res.data.nickname);
+    const hasToken = localStorage.getItem('TOKEN');
+    const setUserState = async () => {
+      dispatch(toggleLoggedIn(true));
+      // FIXME: setNickname 수정
+      // const res = await instance.get('http://13.125.250.104/api/auth');
+      // console.log(res);
+      // dispatch(setNickname(res.data.nickname));
+      dispatch(setNickname('갈비천왕'));
     };
-    getNickname();
+    if (hasToken) {
+      setUserState();
+    }
   }, []);
 
   const handleLogout = async () => {
     const res = await instance.post('http://13.125.250.104/api/logout');
     console.log('로그아웃', res);
-    setNickname('');
-    // TODO: 성공 시 redux nickname state 비우기 '' -> Falsy
+    dispatch(toggleLoggedIn(false));
+    dispatch(setNickname(''));
     localStorage.removeItem('TOKEN');
     alert('로그아웃되었습니다');
     navigate('/login');
   };
-  
+
   return (
     <HeaderComponent>
       <Link to="/">
@@ -37,7 +46,7 @@ const Header = () => {
         </h1>
       </Link>
       <Navbar>
-        {!nickname ? (
+        {isLoggedIn ? (
           <>
             <UserInfo>{nickname}님 환영해요 :)</UserInfo>
             <Link to="/post">게시글작성</Link>

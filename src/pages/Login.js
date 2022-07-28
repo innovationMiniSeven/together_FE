@@ -1,16 +1,19 @@
 import React from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { toggleLoggedIn, setNickname } from '../redux/modules/userSlice';
 
 import Form from '../components/Form';
 import Button from '../components/Button';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import instance from '../shared/Request';
 
-
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -25,10 +28,20 @@ const Login = () => {
 
     try {
       const res = await instance.post('http://13.125.250.104/api/login', data, {
-      // const res = await axios.post('http://localhost:5001/user', data, {
+        // const res = await axios.post('http://localhost:5001/user', data, {
         withCredentials: true,
       });
       localStorage.setItem('TOKEN', res.data);
+      dispatch(toggleLoggedIn(true));
+      // FIXME: setNickname 수정할 것
+      dispatch(setNickname('갈비천왕'));
+      // const auth = await axios.get('http://13.125.250.104/api/auth', {
+      //   headers: {
+      //     Authorization: res.data,
+      //   },
+      // });
+      // console.log(auth);
+      // dispatch(setNickname(auth.data.nickname));
       alert('환영HeyYo :)');
       navigate('/');
     } catch (err) {
